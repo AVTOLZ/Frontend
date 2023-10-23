@@ -129,9 +129,10 @@ fun LoginScreen(component: LoginComponent) {
                 val code = getCode(url)
 
                 if (code == null) {
-
+                    return@MagisterLoginWebView false
                 }
 
+                TODO("login to server, redeem for bearer token")
                 return@MagisterLoginWebView true
             }
         }

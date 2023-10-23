@@ -1,16 +1,16 @@
-package ui.login
+package ui.main
 
 import com.arkivanov.decompose.ComponentContext
 import ui.RootComponent
 
-interface LoginComponent {
+interface MainComponent {
     val parent: RootComponent
 
 
 }
 
-class DefaultLoginComponent(
+class DefaultMainComponent(
     componentContext: ComponentContext, override val parent: RootComponent,
-) : LoginComponent, ComponentContext by componentContext {
+) : MainComponent, ComponentContext by componentContext {
 
 }
