@@ -10,6 +10,18 @@ kotlin {
         val androidMain by getting {
             dependencies {
                 implementation(project(":shared"))
+
+                implementation(libs.android.appcompat)
+                implementation(libs.android.material)
+
+                implementation(libs.compose.activity)
+                implementation(libs.compose.runtime)
+                implementation(libs.compose.ui)
+                implementation(libs.compose.material3)
+                implementation(libs.compose.foundationlayout)
+                implementation(libs.compose.material)
+
+                implementation(libs.decompose.core)
             }
         }
     }
