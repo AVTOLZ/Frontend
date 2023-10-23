@@ -1,4 +1,13 @@
 package ui.login
 
-class LoginComponent {
+import com.arkivanov.decompose.ComponentContext
+
+interface LoginComponent {
+
+}
+
+class DefaultLoginComponent(
+    componentContext: ComponentContext,
+) : LoginComponent, ComponentContext by componentContext {
+
 }

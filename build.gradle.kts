@@ -5,4 +5,23 @@ plugins {
     id("com.android.application").apply(false)
     id("com.android.library").apply(false)
     id("org.jetbrains.compose").apply(false)
+    alias(libs.plugins.complete.kotlin)
+}
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("dev.icerock.moko:resources-generator:0.23.0")
+    }
+}
+
+
+allprojects {
+    repositories {
+        mavenCentral()
+        google()
+    }
 }
