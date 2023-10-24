@@ -14,10 +14,12 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import api.accounts.magisterLink
 import dev.avt.app.MR
 import dev.icerock.moko.resources.compose.painterResource
 import dev.tiebe.magisterapi.api.account.LoginFlow
 import io.ktor.http.*
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LoginScreen(component: LoginComponent) {
@@ -126,13 +128,16 @@ fun LoginScreen(component: LoginComponent) {
                 loginUrl = LoginFlow.createAuthURL()
                 loginUrl.url
             }) { url ->
-                val code = getCode(url)
+                val code = getCode(url) ?: return@MagisterLoginWebView false
 
-                if (code == null) {
-                    return@MagisterLoginWebView false
+                // TODO: make this async with loading indicator
+
+                runBlocking {
+                    val tokens = LoginFlow.exchangeTokens(code, loginUrl.codeVerifier)
+
+                    magisterLink(Data.bearerToken, Data.personId, tokens.refreshToken)
                 }
 
-                TODO("login to server, redeem for bearer token")
                 return@MagisterLoginWebView true
             }
         }
