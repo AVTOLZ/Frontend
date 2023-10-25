@@ -15,6 +15,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import api.accounts.magisterLink
+import api.accounts.magisterLogin
 import dev.avt.app.MR
 import dev.icerock.moko.resources.compose.painterResource
 import dev.tiebe.magisterapi.api.account.LoginFlow
@@ -135,7 +136,7 @@ fun LoginScreen(component: LoginComponent) {
                 runBlocking {
                     val tokens = LoginFlow.exchangeTokens(code, loginUrl.codeVerifier)
 
-                    magisterLink(Data.bearerToken, Data.personId, tokens.refreshToken)
+                    magisterLogin(tokens.refreshToken)
                 }
 
                 return@MagisterLoginWebView true

@@ -6,7 +6,6 @@ plugins {
     id("org.jetbrains.compose")
     id("dev.icerock.mobile.multiplatform-resources")
     kotlin("plugin.serialization") version "1.9.0"
-    id("org.openapi.generator") version "6.6.0"
 }
 
 val os = org.gradle.internal.os.OperatingSystem.current()
@@ -36,9 +35,7 @@ kotlin {
     }
 
     sourceSets {
-
         val commonMain by getting {
-
             dependencies {
                 implementation(compose.ui)
                 implementation(compose.runtime)
@@ -134,23 +131,3 @@ android {
 multiplatformResources {
     multiplatformResourcesPackage = "dev.avt.app" // required
 }
-
-val generatedSourcesPath = "$buildDir/generated"
-val apiDescriptionFile = "$rootDir/server.yaml"
-val apiRootName = "dev.avt.api"
-
-openApiGenerate {
-    generatorName.set("kotlin")
-    inputSpec.set(apiDescriptionFile)
-    outputDir.set("$buildDir/generated")
-    apiPackage.set("$apiRootName.api")
-    packageName.set(apiRootName)
-    modelPackage.set("$apiRootName.model")
-}
-
-kotlin.sourceSets["commonMain"].kotlin.srcDir("$generatedSourcesPath/src/main/kotlin")
-
-tasks.withType<KotlinCompile>().configureEach {
-    dependsOn("openApiGenerate")
-}
-
