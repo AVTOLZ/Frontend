@@ -10,7 +10,7 @@ import io.ktor.http.*
 fun login() {
 }
 
-suspend fun magisterLogin(refreshToken: String) {
+suspend fun magisterLogin(refreshToken: String): Boolean {
     val request = client.post(magisterUrl.build()) {
         setBody(refreshToken)
     }
@@ -20,7 +20,9 @@ suspend fun magisterLogin(refreshToken: String) {
 
         Data.personId = response.personId
         Data.bearerToken = response.token
+
+        return true
     } else {
-        throw Exception("Failed to login: ${request.status}, ${request.body<String>()}")
+        return false
     }
 }

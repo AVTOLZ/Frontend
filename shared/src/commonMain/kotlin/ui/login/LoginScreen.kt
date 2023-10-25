@@ -21,6 +21,7 @@ import dev.icerock.moko.resources.compose.painterResource
 import dev.tiebe.magisterapi.api.account.LoginFlow
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import ui.RootComponent
 
 @Composable
 fun LoginScreen(component: LoginComponent) {
@@ -133,13 +134,17 @@ fun LoginScreen(component: LoginComponent) {
 
                 // TODO: make this async with loading indicator
 
-                runBlocking {
+                val success = runBlocking {
                     val tokens = LoginFlow.exchangeTokens(code, loginUrl.codeVerifier)
 
                     magisterLogin(tokens.refreshToken)
                 }
 
-                return@MagisterLoginWebView true
+                if (success) {
+                    component.parent.navigateTo(RootComponent.Config.Main)
+                }
+
+                return@MagisterLoginWebView success
             }
         }
     }

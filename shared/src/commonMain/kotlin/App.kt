@@ -26,7 +26,6 @@ fun App(component: RootComponent) {
             when (val child = it.instance) {
                 is RootComponent.Child.LoginChild -> LoginScreen(child.component)
                 is RootComponent.Child.MainScreen -> MainScreen(child.component)
-
             }
         }
     }
