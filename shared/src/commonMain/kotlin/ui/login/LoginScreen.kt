@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import api.accounts.login
 import api.accounts.magisterLink
 import api.accounts.magisterLogin
 import dev.avt.app.MR
@@ -50,7 +51,7 @@ fun LoginScreen(component: LoginComponent) {
             OutlinedTextField(
                 value = email,
                 onValueChange = { email = it },
-                label = { Text("Email") },
+                label = { Text("Username") },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -97,7 +98,15 @@ fun LoginScreen(component: LoginComponent) {
             )
 
             Button(
-                onClick = { /* Handle login button click */ },
+                onClick = {
+                    val success = runBlocking {
+                        login(email, password)
+                    }
+
+                    if (success) {
+                        component.parent.navigateTo(RootComponent.Config.Main)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp)

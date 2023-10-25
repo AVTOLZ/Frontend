@@ -11,4 +11,10 @@ object Data {
         get() = settings.getIntOrNull("personId") ?: throw Exception("No person id")
         set(value) = settings.putInt("personId", value)
 
+
+
+    fun clearData() {
+        settings.clear()
+    }
+
 }

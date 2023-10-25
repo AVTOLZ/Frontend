@@ -13,6 +13,6 @@ val client = HttpClient {
 
 val baseUrl = URLBuilder("http://localhost:8080").appendPathSegments("api")
 
-val accountsUrl = baseUrl.appendPathSegments("accounts")
-val loginUrl = accountsUrl.appendPathSegments("login")
-val magisterUrl = loginUrl.appendPathSegments("magister")
+val accountsUrl = baseUrl.clone().appendPathSegments("accounts")
+val loginUrl = accountsUrl.clone().appendPathSegments("login")
+val magisterUrl = loginUrl.clone().appendPathSegments("magister")
