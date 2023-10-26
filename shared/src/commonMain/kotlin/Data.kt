@@ -11,6 +11,10 @@ object Data {
         get() = settings.getIntOrNull("personId") ?: throw Exception("No person id")
         set(value) = settings.putInt("personId", value)
 
+    var verified
+        get() = settings.getBooleanOrNull("verified") ?: false
+        set(value) = settings.putBoolean("verified", value)
+
 
 
     fun clearData() {
