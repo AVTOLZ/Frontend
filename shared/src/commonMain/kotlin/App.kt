@@ -10,6 +10,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.DefaultRootComponent
 import ui.RootComponent
 import ui.login.LoginScreen
+import ui.main.MainScreen
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
