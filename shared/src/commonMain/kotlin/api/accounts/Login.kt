@@ -22,6 +22,8 @@ suspend fun login(username: String, password: String): Boolean {
         Data.bearerToken = response.token
         Data.personId = response.personId
 
+        Data.verified = response.verified
+
         return true
     } else {
         return false
@@ -38,6 +40,8 @@ suspend fun magisterLogin(refreshToken: String): Boolean {
 
         Data.personId = response.personId
         Data.bearerToken = response.token
+
+        Data.verified = response.verified
 
         return true
     } else {

@@ -25,6 +25,8 @@ suspend fun register(username: String, password: String, email: String, firstNam
         Data.bearerToken = response.token
         Data.personId = response.personId
 
+        Data.verified = response.verified
+
         return true
     } else {
         return false

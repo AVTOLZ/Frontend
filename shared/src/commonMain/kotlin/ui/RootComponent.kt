@@ -8,6 +8,8 @@ import kotlinx.serialization.Serializable
 import ui.login.DefaultLoginComponent
 import ui.main.DefaultMainComponent
 import ui.main.MainComponent
+import ui.verify.DefaultVerificationComponent
+import ui.verify.VerificationComponent
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -20,6 +22,8 @@ interface RootComponent {
         class LoginChild(val component: LoginComponent) : Child()
 
         class MainScreen(val component: MainComponent) : Child()
+
+        class Verify(val component: VerificationComponent) : Child()
     }
 
     @Serializable // kotlinx-serialization plugin must be applied
@@ -29,6 +33,9 @@ interface RootComponent {
 
         @Serializable
         data object Main : Config
+
+        @Serializable
+        data object Verify : Config
     }
 }
 
@@ -51,6 +58,8 @@ class DefaultRootComponent(
             return RootComponent.Config.Login
         }
 
+        if (!Data.verified) return RootComponent.Config.Verify
+
         return RootComponent.Config.Main
     }
 
@@ -58,6 +67,7 @@ class DefaultRootComponent(
         when (config) {
             is RootComponent.Config.Login -> RootComponent.Child.LoginChild(loginComponent(componentContext))
             is RootComponent.Config.Main -> RootComponent.Child.MainScreen(mainComponent(componentContext))
+            is RootComponent.Config.Verify -> RootComponent.Child.Verify(verificationComponent(componentContext))
         }
 
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
@@ -65,6 +75,9 @@ class DefaultRootComponent(
 
     private fun mainComponent(componentContext: ComponentContext): MainComponent =
         DefaultMainComponent(componentContext, this)
+
+    private fun verificationComponent(componentContext: ComponentContext): VerificationComponent =
+        DefaultVerificationComponent(componentContext, this)
 
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(index = toIndex)

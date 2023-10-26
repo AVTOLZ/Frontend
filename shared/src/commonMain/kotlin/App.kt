@@ -1,3 +1,4 @@
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,24 +13,22 @@ import ui.DefaultRootComponent
 import ui.RootComponent
 import ui.login.LoginScreen
 import ui.main.MainScreen
+import ui.verify.VerificationScreen
 
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App(component: RootComponent) {
     MaterialTheme {
         Children(
             stack = component.stack,
-            modifier = Modifier,
+            modifier = Modifier.fillMaxSize(),
             animation = stackAnimation(fade() + scale()),
         ) {
             when (val child = it.instance) {
                 is RootComponent.Child.LoginChild -> LoginScreen(child.component)
                 is RootComponent.Child.MainScreen -> MainScreen(child.component)
+                is RootComponent.Child.Verify -> VerificationScreen(child.component)
             }
         }
     }
 }
-
-
-expect fun getPlatformName(): String
