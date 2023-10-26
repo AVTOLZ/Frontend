@@ -6,6 +6,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
+import io.ktor.client.*
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.DefaultRootComponent
 import ui.RootComponent
@@ -24,7 +25,6 @@ fun App(component: RootComponent) {
             when (val child = it.instance) {
                 is RootComponent.Child.LoginChild -> LoginScreen(child.component)
                 is RootComponent.Child.MainScreen -> MainScreen(child.component)
-
             }
         }
     }

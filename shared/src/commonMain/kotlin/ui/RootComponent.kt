@@ -41,10 +41,18 @@ class DefaultRootComponent(
         childStack(
             source = navigation,
             serializer = RootComponent.Config.serializer(),
-            initialConfiguration = RootComponent.Config.Login, // The initial child component is List
+            initialConfiguration = getInitialConfiguration(), // The initial child component is List
             handleBackButton = true, // Automatically pop from the stack on back button presses
             childFactory = ::child,
         )
+
+    private fun getInitialConfiguration(): RootComponent.Config {
+        if (Data.bearerToken == null) {
+            return RootComponent.Config.Login
+        }
+
+        return RootComponent.Config.Main
+    }
 
     private fun child(config: RootComponent.Config, componentContext: ComponentContext): RootComponent.Child =
         when (config) {
