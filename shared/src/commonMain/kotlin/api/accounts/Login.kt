@@ -8,6 +8,8 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
+//TODO: error when logging in with incorrect information / account doesnt exist
+
 suspend fun login(username: String, password: String): Boolean {
     val request = client.post(loginUrl.build()) {
         contentType(ContentType.Application.Json)
@@ -19,6 +21,8 @@ suspend fun login(username: String, password: String): Boolean {
 
         Data.bearerToken = response.token
         Data.personId = response.personId
+
+        Data.verified = response.verified
 
         return true
     } else {
@@ -36,6 +40,8 @@ suspend fun magisterLogin(refreshToken: String): Boolean {
 
         Data.personId = response.personId
         Data.bearerToken = response.token
+
+        Data.verified = response.verified
 
         return true
     } else {

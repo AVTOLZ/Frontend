@@ -1,4 +1,4 @@
-package ui.presence
+package ui.main.children.presence
 
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.FlowPreview

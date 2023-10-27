@@ -1,14 +1,16 @@
-package ui.presence
+package ui.register
 
 import com.arkivanov.decompose.ComponentContext
 import ui.RootComponent
 
-interface PresenceComponent {
+interface RegisterComponent {
     val parent: RootComponent
+
+
 }
 
-class DefaultPresenceComponent(
+class DefaultRegisterComponent(
     componentContext: ComponentContext, override val parent: RootComponent,
-) : PresenceComponent, ComponentContext by componentContext {
+) : RegisterComponent, ComponentContext by componentContext {
 
 }
