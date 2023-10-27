@@ -23,6 +23,8 @@ interface RootComponent {
 
     fun navigateTo(config: Config)
 
+    fun clearStack(newConfig: Config)
+
     sealed class Child {
         class LoginChild(val component: LoginComponent) : Child()
 
@@ -99,5 +101,9 @@ class DefaultRootComponent(
 
     override fun navigateTo(config: RootComponent.Config) {
         navigation.push(config)
+    }
+
+    override fun clearStack(newConfig: RootComponent.Config) {
+        navigation.replaceAll(newConfig)
     }
 }

@@ -72,7 +72,7 @@ fun RegisterScreen(component: RegisterComponent) {
                     }
 
                     if (success) {
-                        component.parent.navigateTo(RootComponent.Config.Verify)
+                        component.parent.clearStack(RootComponent.Config.Verify)
                     }
                 },
                 modifier = Modifier

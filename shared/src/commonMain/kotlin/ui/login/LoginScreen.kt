@@ -71,7 +71,7 @@ fun LoginScreen(component: LoginComponent) {
 
             Button(
                 onClick = {
-                    component.parent.navigateTo(RootComponent.Config.Register)
+                    component.parent.clearStack(RootComponent.Config.Register)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
