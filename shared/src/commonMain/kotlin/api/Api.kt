@@ -19,3 +19,4 @@ val magisterUrl = loginUrl.clone().appendPathSegments("magister")
 
 val personUrl get() = baseUrl.clone().appendPathSegments("person", Data.personId.toString())
 val availabilityUrl = personUrl.clone().appendPathSegments("availability")
+val requestHoursUrl = personUrl.clone().appendPathSegments("request_hours")
