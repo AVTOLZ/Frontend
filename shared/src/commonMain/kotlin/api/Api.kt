@@ -16,3 +16,6 @@ val baseUrl = URLBuilder("http://localhost:8080").appendPathSegments("api")
 val accountsUrl = baseUrl.clone().appendPathSegments("accounts")
 val loginUrl = accountsUrl.clone().appendPathSegments("login")
 val magisterUrl = loginUrl.clone().appendPathSegments("magister")
+
+val registerUrl = accountsUrl.clone().appendPathSegments("register")
+val verifyUrl = accountsUrl.clone().appendPathSegments("verify")
