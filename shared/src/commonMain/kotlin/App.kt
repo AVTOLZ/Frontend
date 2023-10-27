@@ -16,7 +16,7 @@ import ui.main.MainScreen
 import ui.register.RegisterScreen
 import ui.verify.VerificationScreen
 
-
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App(component: RootComponent) {
     MaterialTheme {
