@@ -23,3 +23,5 @@ val requestHoursUrl = personUrl.clone().appendPathSegments("request_hours")
 
 val registerUrl = accountsUrl.clone().appendPathSegments("register")
 val verifyUrl = accountsUrl.clone().appendPathSegments("verify")
+
+val infoUrl = personUrl.clone().appendPathSegments("info")

@@ -8,7 +8,7 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-suspend fun ReadAvailability(token: String) : List<HourDataFormat>? {
+suspend fun ReadAvailability() : List<HourDataFormat>? {
     val request = client.get(availabilityUrl.build()) {
         contentType(ContentType.Application.Json)
         setBody(ReadAvailabilityRequest(Data.bearerToken.toString()))
