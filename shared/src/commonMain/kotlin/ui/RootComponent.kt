@@ -8,6 +8,8 @@ import kotlinx.serialization.Serializable
 import ui.login.DefaultLoginComponent
 import ui.main.DefaultMainComponent
 import ui.main.MainComponent
+import ui.presence.DefaultPresenceComponent
+import ui.presence.PresenceComponent
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -20,6 +22,8 @@ interface RootComponent {
         class LoginChild(val component: LoginComponent) : Child()
 
         class MainScreen(val component: MainComponent) : Child()
+
+        class PresenceScreen(val component: PresenceComponent) : Child()
     }
 
     @Serializable // kotlinx-serialization plugin must be applied
@@ -29,6 +33,9 @@ interface RootComponent {
 
         @Serializable
         data object Main : Config
+
+        @Serializable
+        data object Presence : Config
     }
 }
 
@@ -58,6 +65,7 @@ class DefaultRootComponent(
         when (config) {
             is RootComponent.Config.Login -> RootComponent.Child.LoginChild(loginComponent(componentContext))
             is RootComponent.Config.Main -> RootComponent.Child.MainScreen(mainComponent(componentContext))
+            is RootComponent.Config.Presence -> RootComponent.Child.PresenceScreen(presenceComponent(componentContext))
         }
 
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
@@ -65,6 +73,9 @@ class DefaultRootComponent(
 
     private fun mainComponent(componentContext: ComponentContext): MainComponent =
         DefaultMainComponent(componentContext, this)
+
+    private fun presenceComponent(componentContext: ComponentContext): PresenceComponent =
+        DefaultPresenceComponent(componentContext, this)
 
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(index = toIndex)
