@@ -3,6 +3,7 @@ package api.accounts
 import api.client
 import api.loginUrl
 import api.registerUrl
+import api.verifyUrl
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -17,6 +18,7 @@ suspend fun register(username: String, password: String, email: String, firstNam
             firstName,
             lastName
         ))
+
     }
 
     if (request.status == HttpStatusCode.OK) {
@@ -31,4 +33,18 @@ suspend fun register(username: String, password: String, email: String, firstNam
     } else {
         return false
     }
+}
+
+suspend fun verifyAccount(personId: Int, code: Int): Boolean {
+    val request = client.post(verifyUrl.build()) {
+        parameter("id", personId)
+        parameter("code", code)
+    }
+
+    if (request.status == HttpStatusCode.OK) {
+        Data.verified = true
+        return true
+    }
+
+    return false
 }

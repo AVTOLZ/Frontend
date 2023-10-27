@@ -18,3 +18,4 @@ val loginUrl = accountsUrl.clone().appendPathSegments("login")
 val magisterUrl = loginUrl.clone().appendPathSegments("magister")
 
 val registerUrl = accountsUrl.clone().appendPathSegments("register")
+val verifyUrl = accountsUrl.clone().appendPathSegments("verify")
