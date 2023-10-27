@@ -9,6 +9,7 @@ import kotlinx.serialization.Serializable
 import ui.login.DefaultLoginComponent
 import ui.main.DefaultMainComponent
 import ui.main.MainComponent
+import ui.main.MenuItemComponent
 import ui.main.children.presence.DefaultPresenceComponent
 import ui.main.children.presence.PresenceComponent
 import ui.register.DefaultRegisterComponent
@@ -16,9 +17,7 @@ import ui.register.RegisterComponent
 import ui.verify.DefaultVerificationComponent
 import ui.verify.VerificationComponent
 
-interface PresenceComponent {
-    val parent: MainComponent
-
+interface PresenceComponent: MenuItemComponent {
 
 }
 

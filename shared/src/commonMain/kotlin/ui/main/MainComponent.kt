@@ -1,31 +1,42 @@
 package ui.main
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
 import com.arkivanov.decompose.ComponentContext
+import com.arkivanov.decompose.router.slot.ChildSlot
+import com.arkivanov.decompose.router.slot.SlotNavigation
+import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
 import kotlinx.serialization.Serializable
 import ui.RootComponent
 import ui.main.children.presence.DefaultPresenceComponent
 import ui.main.children.presence.PresenceComponent
+import ui.main.icons.CalendarTodayIcon
+
+interface MenuItemComponent {
+    val parent: MainComponent
+}
 
 interface MainComponent {
     val parent: RootComponent
-    val stack: Value<ChildStack<*, Child>>
 
     fun onBackClicked(toIndex: Int)
 
     fun navigateTo(config: Config)
 
-    sealed class Child {
-        class PresenceScreen(val component: PresenceComponent) : Child()
-    }
-
     @Serializable // kotlinx-serialization plugin must be applied
-    sealed interface Config {
+    sealed class Config(val text: String, val icon: @Composable () -> Unit) {
         @Serializable
-        data object Presence : Config
+        data object Presence : Config("Presence", {
+            Icon(CalendarTodayIcon, "Presence")
+        })
     }
 
+
+    val dialog: Value<ChildSlot<Config, MenuItemComponent>>
 }
 
 class DefaultMainComponent(
@@ -33,23 +44,18 @@ class DefaultMainComponent(
 ) : MainComponent, ComponentContext by componentContext {
     private val navigation = StackNavigation<MainComponent.Config>()
 
-    override val stack: Value<ChildStack<*, MainComponent.Child>> =
-        childStack(
-            source = navigation,
-            serializer = MainComponent.Config.serializer(),
-            initialConfiguration = getInitialConfiguration(), // The initial child component is List
-            handleBackButton = true, // Automatically pop from the stack on back button presses
-            childFactory = ::child,
-        )
+    private val dialogNavigation = SlotNavigation<MainComponent.Config>()
 
-    private fun getInitialConfiguration(): MainComponent.Config {
-        return MainComponent.Config.Presence
-    }
-
-    private fun child(config: MainComponent.Config, componentContext: ComponentContext): MainComponent.Child =
+    override val dialog: Value<ChildSlot<MainComponent.Config, MenuItemComponent>> = childSlot<MainComponent.Config, MenuItemComponent>(
+        source = dialogNavigation,
+        serializer = MainComponent.Config.serializer(),
+        initialConfiguration = { MainComponent.Config.Presence },
+        handleBackButton = false
+    ) { config: MainComponent.Config, componentContext: ComponentContext ->
         when (config) {
-            MainComponent.Config.Presence -> MainComponent.Child.PresenceScreen(presenceComponent(componentContext))
+            MainComponent.Config.Presence -> presenceComponent(componentContext)
         }
+    }
 
     private fun presenceComponent(componentContext: ComponentContext): PresenceComponent =
         DefaultPresenceComponent(componentContext, this)
