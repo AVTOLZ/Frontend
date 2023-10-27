@@ -9,8 +9,8 @@ import kotlinx.serialization.Serializable
 import ui.login.DefaultLoginComponent
 import ui.main.DefaultMainComponent
 import ui.main.MainComponent
-import ui.presence.DefaultPresenceComponent
-import ui.presence.PresenceComponent
+import ui.main.children.presence.DefaultPresenceComponent
+import ui.main.children.presence.PresenceComponent
 import ui.register.DefaultRegisterComponent
 import ui.register.RegisterComponent
 import ui.verify.DefaultVerificationComponent
@@ -28,8 +28,6 @@ interface RootComponent {
 
         class MainScreen(val component: MainComponent) : Child()
 
-        class PresenceScreen(val component: PresenceComponent) : Child()
-        
         class Verify(val component: VerificationComponent) : Child()
 
         class Register(val component: RegisterComponent) : Child()
@@ -43,9 +41,6 @@ interface RootComponent {
         @Serializable
         data object Main : Config
 
-        @Serializable
-        data object Presence : Config
-      
         @Serializable
         data object Verify : Config
 
@@ -82,7 +77,6 @@ class DefaultRootComponent(
         when (config) {
             is RootComponent.Config.Login -> RootComponent.Child.LoginChild(loginComponent(componentContext))
             is RootComponent.Config.Main -> RootComponent.Child.MainScreen(mainComponent(componentContext))
-            is RootComponent.Config.Presence -> RootComponent.Child.PresenceScreen(presenceComponent(componentContext))
             is RootComponent.Config.Verify -> RootComponent.Child.Verify(verificationComponent(componentContext))
             is RootComponent.Config.Register -> RootComponent.Child.Register(registerComponent(componentContext))
         }
@@ -93,9 +87,6 @@ class DefaultRootComponent(
     private fun mainComponent(componentContext: ComponentContext): MainComponent =
         DefaultMainComponent(componentContext, this)
 
-    private fun presenceComponent(componentContext: ComponentContext): PresenceComponent =
-        DefaultPresenceComponent(componentContext, this)
-        
     private fun verificationComponent(componentContext: ComponentContext): VerificationComponent =
         DefaultVerificationComponent(componentContext, this)
 
@@ -106,7 +97,7 @@ class DefaultRootComponent(
         navigation.popTo(index = toIndex)
     }
 
-    override fun navigateTo(child: RootComponent.Config) {
-        navigation.push(child)
+    override fun navigateTo(config: RootComponent.Config) {
+        navigation.push(config)
     }
 }

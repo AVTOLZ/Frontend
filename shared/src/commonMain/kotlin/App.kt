@@ -13,7 +13,7 @@ import ui.DefaultRootComponent
 import ui.RootComponent
 import ui.login.LoginScreen
 import ui.main.MainScreen
-import ui.presence.PresenceScreen
+import ui.main.children.presence.PresenceScreen
 import ui.register.RegisterScreen
 import ui.verify.VerificationScreen
 
