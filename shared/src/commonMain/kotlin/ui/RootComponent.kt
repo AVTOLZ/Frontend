@@ -1,3 +1,4 @@
+
 package ui
 
 import com.arkivanov.decompose.ComponentContext
@@ -10,6 +11,10 @@ import ui.main.DefaultMainComponent
 import ui.main.MainComponent
 import ui.presence.DefaultPresenceComponent
 import ui.presence.PresenceComponent
+import ui.register.DefaultRegisterComponent
+import ui.register.RegisterComponent
+import ui.verify.DefaultVerificationComponent
+import ui.verify.VerificationComponent
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -24,6 +29,10 @@ interface RootComponent {
         class MainScreen(val component: MainComponent) : Child()
 
         class PresenceScreen(val component: PresenceComponent) : Child()
+        
+        class Verify(val component: VerificationComponent) : Child()
+
+        class Register(val component: RegisterComponent) : Child()
     }
 
     @Serializable // kotlinx-serialization plugin must be applied
@@ -36,6 +45,12 @@ interface RootComponent {
 
         @Serializable
         data object Presence : Config
+      
+        @Serializable
+        data object Verify : Config
+
+        @Serializable
+        data object Register : Config
     }
 }
 
@@ -58,6 +73,8 @@ class DefaultRootComponent(
             return RootComponent.Config.Login
         }
 
+        if (!Data.verified) return RootComponent.Config.Verify
+
         return RootComponent.Config.Main
     }
 
@@ -66,6 +83,8 @@ class DefaultRootComponent(
             is RootComponent.Config.Login -> RootComponent.Child.LoginChild(loginComponent(componentContext))
             is RootComponent.Config.Main -> RootComponent.Child.MainScreen(mainComponent(componentContext))
             is RootComponent.Config.Presence -> RootComponent.Child.PresenceScreen(presenceComponent(componentContext))
+            is RootComponent.Config.Verify -> RootComponent.Child.Verify(verificationComponent(componentContext))
+            is RootComponent.Config.Register -> RootComponent.Child.Register(registerComponent(componentContext))
         }
 
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
@@ -76,6 +95,12 @@ class DefaultRootComponent(
 
     private fun presenceComponent(componentContext: ComponentContext): PresenceComponent =
         DefaultPresenceComponent(componentContext, this)
+        
+    private fun verificationComponent(componentContext: ComponentContext): VerificationComponent =
+        DefaultVerificationComponent(componentContext, this)
+
+    private fun registerComponent(componentContext: ComponentContext): RegisterComponent =
+        DefaultRegisterComponent(componentContext, this)
 
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(index = toIndex)
