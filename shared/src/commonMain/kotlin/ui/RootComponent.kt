@@ -4,6 +4,11 @@ package ui
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.LifecycleOwner
+import com.arkivanov.essenty.lifecycle.doOnDestroy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import ui.login.LoginComponent
 import kotlinx.serialization.Serializable
 import ui.login.DefaultLoginComponent
@@ -15,6 +20,7 @@ import ui.register.DefaultRegisterComponent
 import ui.register.RegisterComponent
 import ui.verify.DefaultVerificationComponent
 import ui.verify.VerificationComponent
+import kotlin.coroutines.CoroutineContext
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -107,3 +113,14 @@ class DefaultRootComponent(
         navigation.replaceAll(newConfig)
     }
 }
+
+fun CoroutineScope(context: CoroutineContext, lifecycle: Lifecycle): CoroutineScope {
+    val scope = CoroutineScope(context)
+    lifecycle.doOnDestroy(scope::cancel)
+    return scope
+}
+
+fun LifecycleOwner.componentCoroutineScope(context: CoroutineContext): CoroutineScope =
+    CoroutineScope(context, lifecycle)
+
+fun LifecycleOwner.coroutineScope(context: CoroutineContext) = componentCoroutineScope(context)

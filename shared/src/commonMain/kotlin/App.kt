@@ -13,7 +13,6 @@ import ui.DefaultRootComponent
 import ui.RootComponent
 import ui.login.LoginScreen
 import ui.main.MainScreen
-import ui.main.children.presence.PresenceScreen
 import ui.register.RegisterScreen
 import ui.verify.VerificationScreen
 
@@ -29,7 +28,6 @@ fun App(component: RootComponent) {
             when (val child = it.instance) {
                 is RootComponent.Child.LoginChild -> LoginScreen(child.component)
                 is RootComponent.Child.MainScreen -> MainScreen(child.component)
-                is RootComponent.Child.PresenceScreen -> PresenceScreen(child.component)
                 is RootComponent.Child.Verify -> VerificationScreen(child.component)
                 is RootComponent.Child.Register -> RegisterScreen(child.component)
             }
