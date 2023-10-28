@@ -61,6 +61,8 @@ kotlin {
                 implementation(libs.magister.api)
 
                 implementation(libs.kotlin.serialization)
+                implementation(libs.kotlin.datetime)
+
             }
         }
         val androidMain by getting {
