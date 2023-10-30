@@ -9,6 +9,8 @@ import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import ui.main.children.presence.DefaultPresenceComponent
 import ui.main.children.presence.PresenceScreen
+import ui.main.children.settings.DefaultSettingsComponent
+import ui.main.children.settings.SettingsScreen
 
 @Composable
 fun MainScreen(component: MainComponent) {
@@ -16,7 +18,8 @@ fun MainScreen(component: MainComponent) {
     val overlay = dialog.value.child ?: return
 
     val items = listOf(
-        MainComponent.Config.Presence
+        MainComponent.Config.Presence,
+        MainComponent.Config.Settings
     )
 
     Scaffold(
@@ -38,6 +41,7 @@ fun MainScreen(component: MainComponent) {
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             when (val dialogComponent = overlay.instance) {
                 is DefaultPresenceComponent -> PresenceScreen(dialogComponent)
+                is DefaultSettingsComponent -> SettingsScreen(dialogComponent)
                 else -> {}
             }
         }

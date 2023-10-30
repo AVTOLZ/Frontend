@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.times
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 
-val timesShown = 8..17
+val timesShown = 8..20
 val dpPerHour = 80.dp
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)

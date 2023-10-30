@@ -30,7 +30,7 @@ object Data {
 
     var userRank
         get() = settings.getIntOrNull("userRank") ?: 0
-        set(value) = settings.putInt("userRank", value ?: 0)
+        set(value) = settings.putInt("userRank", value)
 
     var userRankString
         get() = settings.getStringOrNull("userRankString")
