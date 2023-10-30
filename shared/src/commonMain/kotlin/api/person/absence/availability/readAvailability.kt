@@ -12,10 +12,9 @@ suspend fun readAvailability() : List<AvailabilityItem>? {
         setBody(ReadAvailabilityRequest(Data.bearerToken.toString()))
     }
 
-    if (request.status == HttpStatusCode.OK) {
-        return request.body<ReadAvailabilityResponse>().hours
-    }
-    else {
-        return null
+    return if (request.status == HttpStatusCode.OK) {
+        request.body<ReadAvailabilityResponse>().hours
+    } else {
+        null
     }
 }
