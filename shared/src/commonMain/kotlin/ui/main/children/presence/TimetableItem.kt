@@ -4,8 +4,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.draw.drawWithCache
@@ -18,7 +17,11 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import api.person.absence.availability.AvailabilityItem
+import api.person.absence.availability.HourStatus
+import api.person.absence.requestHours.HourRequestType
+import api.person.absence.requestHours.requestHours
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
 import kotlin.time.DurationUnit
 
@@ -62,6 +65,10 @@ internal fun TimetableItems(
 fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onClick: () -> Unit) {
     val supportingText = mutableListOf<String>("prachtige description")
 
+    // TODO implement approved time hours
+
+    var checked by remember { mutableStateOf(item.status == HourStatus.Requested) }
+
     ListItem(
         modifier = modifier
             .clickable(onClick = onClick)
@@ -72,6 +79,25 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onClick: () -> Uni
         },
         trailingContent = {
             /* TODO: Abel place checkmarks here */
+            Checkbox(
+                checked = checked,
+                onCheckedChange = {
+                    checked = it
+
+                    val requestType: HourRequestType = if (it) {
+                        HourRequestType.absent
+                    } else {
+                        HourRequestType.nothing
+                    }
+
+                    runBlocking {
+                        val res = requestHours(item.id, requestType)
+                        if (!res) {
+                            checked = !it
+                        }
+                    }
+                }
+            )
         },
     )
 }
