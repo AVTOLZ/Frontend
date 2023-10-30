@@ -18,10 +18,10 @@ val loginUrl = accountsUrl.clone().appendPathSegments("login")
 val magisterUrl = loginUrl.clone().appendPathSegments("magister")
 
 val personUrl get() = baseUrl.clone().appendPathSegments("person", Data.personId.toString())
-val availabilityUrl = personUrl.clone().appendPathSegments("availability")
-val requestHoursUrl = personUrl.clone().appendPathSegments("request_hours")
+val availabilityUrl get() = personUrl.clone().appendPathSegments("availability")
+val requestHoursUrl get() = personUrl.clone().appendPathSegments("request_hours")
 
 val registerUrl = accountsUrl.clone().appendPathSegments("register")
 val verifyUrl = accountsUrl.clone().appendPathSegments("verify")
 
-val infoUrl = personUrl.clone().appendPathSegments("info")
+val infoUrl get() = personUrl.clone().appendPathSegments("info")
