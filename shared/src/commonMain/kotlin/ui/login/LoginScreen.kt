@@ -7,6 +7,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import api.accounts.login
 import api.accounts.magisterLogin
@@ -25,6 +26,7 @@ fun LoginScreen(component: LoginComponent) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         var magisterScreenVisible by remember { mutableStateOf(false) }
+        var errorMessage by remember { mutableStateOf("") }
 
         Column(
             modifier = Modifier
@@ -38,6 +40,16 @@ fun LoginScreen(component: LoginComponent) {
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
+
+            if (errorMessage.isNotBlank()) {
+                Text(
+                    text = errorMessage,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Red,
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
+            }
+
 
             GeneralUI.InputTextField(
                 value = username,
@@ -60,6 +72,8 @@ fun LoginScreen(component: LoginComponent) {
 
                     if (success) {
                         component.parent.navigateTo(RootComponent.Config.Main)
+                    } else {
+                        errorMessage = "Invalid username or password"
                     }
                 },
                 modifier = Modifier
@@ -117,6 +131,9 @@ fun LoginScreen(component: LoginComponent) {
 
                 if (success) {
                     component.parent.navigateTo(RootComponent.Config.Main)
+                } else {
+                    errorMessage = "Error while signing into Magister, please try again."
+                    magisterScreenVisible = false
                 }
 
                 return@MagisterLoginWebView success

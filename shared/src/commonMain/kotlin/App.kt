@@ -1,4 +1,6 @@
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +18,6 @@ import ui.main.MainScreen
 import ui.register.RegisterScreen
 import ui.verify.VerificationScreen
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App(component: RootComponent) {
     MaterialTheme {
