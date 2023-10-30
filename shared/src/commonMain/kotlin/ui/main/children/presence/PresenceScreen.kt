@@ -1,8 +1,5 @@
 package ui.main.children.presence
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.PagerState
@@ -12,27 +9,22 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-
+import kotlinx.datetime.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun TimetableScreen(component: PresenceComponent) {
+fun PresenceScreen(component: PresenceComponent) {
     var currentTime = remember {
         Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
     }
@@ -49,7 +41,7 @@ internal fun TimetableScreen(component: PresenceComponent) {
 
     LaunchedEffect(dayPagerState.currentPage) {
         val startOfWeekDate = getStartOfWeekFromDay(dayPagerState.currentPage, 350)
-        component.refreshTimetable(startOfWeekDate)
+        component.refreshTimetable(startOfWeekDate, startOfWeekDate + DatePeriod(days = 7))
 
         weekPagerState.animateScrollToPage(dayPagerState.currentPage / 7)
     }
@@ -102,73 +94,9 @@ fun TodayButton(dayPagerState: PagerState, currentDayOfWeek: Int) {
     }
 }
 
-//@OptIn(ExperimentalFoundationApi::class)
-//@Composable
-//fun PresenceScreen(component: PresenceComponent) {
-//    val dayPagerState = rememberPagerState(component.currentPage.value)
-//    val weekPagerState = rememberPagerState(100)
-//
-//    Column(modifier = Modifier.fillMaxSize()) {
-//        DaySelector(
-//            component = component,
-//            dayPagerState = dayPagerState,
-//            weekPagerState = weekPagerState
-//        )
-//
-//        Timetable(
-//            component = component,
-//            dayPagerState = dayPagerState,
-//        )
-//    }
-//
-//    val scope = rememberCoroutineScope()
-//
-//    if (dayPagerState.currentPage != (component.amountOfDays / 2) + component.now.value.dayOfWeek.ordinal) {
-//        Box(Modifier.fillMaxSize()) {
-//            Button(
-//                onClick = { component.scrollToPage(scope, (component.amountOfDays / 2) + component.now.value.dayOfWeek.ordinal, dayPagerState) },
-//                modifier = Modifier
-//                    .size(60.dp)
-//                    .padding(10.dp)
-//                    .align(Alignment.BottomEnd),
-//                shape = CircleShape,
-//                contentPadding = PaddingValues(0.dp),
-//                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-//            ) {
-//                Icon(
-//                    imageVector = Icons.Filled.Home,
-//                    contentDescription = "Today",
-//                    tint = MaterialTheme.colorScheme.onPrimary
-//                )
-//            }
-//        }
-//    }
-//
-//    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//        val popupItem = component.openedTimetableItem.subscribeAsState()
-//
-//        AnimatedVisibility(
-//            visible = popupItem.value.first,
-//            enter = fadeIn(),
-//            exit = fadeOut(),
-//            modifier = Modifier.fillMaxSize()
-//        ) {
-//            TimetableItemPopup(popupItem.value.second!!)
-//        }
-//    }
-//
-//    var currentPage = remember { dayPagerState.currentPage }
-//
-//    LaunchedEffect(dayPagerState.currentPage) {
-//        if (currentPage != dayPagerState.currentPage) {
-//            currentPage = dayPagerState.currentPage
-//            component.changeDay(dayPagerState.currentPage)
-//        }
-//    }
-//
-//    component.selectedWeek.subscribe { week ->
-//        scope.launch {
-//            weekPagerState.animateScrollToPage(week + 100)
-//        }
-//    }
-//}
+@OptIn(ExperimentalFoundationApi::class)
+fun getStartOfWeekFromDay(page: Int, initialPage: Int, now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))): LocalDate {
+    val initialPageDate = now.date.minus(now.dayOfWeek.ordinal, DateTimeUnit.DAY)
+
+    return initialPageDate.plus(7*(page.floorDiv(7) - initialPage.floorDiv(7)), DateTimeUnit.DAY)
+}

@@ -5,16 +5,11 @@ import api.requestHoursUrl
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-suspend fun RequestHours(IdList: List<Int>): Boolean {
+suspend fun requestHours(idList: List<Int>): Boolean {
     val request = client.post(requestHoursUrl.build()) {
         contentType(ContentType.Application.Json)
-        setBody(RequestHoursRequest(Data.bearerToken.toString(), IdList))
+        setBody(RequestHoursRequest(Data.bearerToken.toString(), idList))
     }
 
-    if (request.status == HttpStatusCode.OK) {
-        return true
-    }
-    else {
-        return false
-    }
+    return request.status == HttpStatusCode.OK
 }
