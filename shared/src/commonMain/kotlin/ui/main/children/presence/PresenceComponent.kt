@@ -2,8 +2,9 @@ package ui.main.children.presence
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.PagerState
+import api.person.absence.availability.AvailabilityItem
+import api.person.absence.availability.readAvailability
 import com.arkivanov.decompose.ComponentContext
-import ui.RootComponent
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
@@ -15,20 +16,20 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
-import ui.login.LoginComponent
-import kotlinx.serialization.Serializable
 import ui.componentCoroutineScope
-import ui.login.DefaultLoginComponent
-import ui.main.DefaultMainComponent
 import ui.main.MainComponent
 import ui.main.MenuItemComponent
-import ui.main.children.presence.DefaultPresenceComponent
-import ui.main.children.presence.PresenceComponent
-import ui.register.DefaultRegisterComponent
-import ui.register.RegisterComponent
-import ui.verify.DefaultVerificationComponent
-import ui.verify.VerificationComponent
 import kotlin.math.floor
+
+val days = listOf(
+    "mon",
+    "tue",
+    "wed",
+    "thu",
+    "fri",
+    "sat",
+    "sun"
+)
 
 interface PresenceComponent: MenuItemComponent {
     val now: Value<LocalDateTime>
@@ -37,12 +38,9 @@ interface PresenceComponent: MenuItemComponent {
 
     val currentPage: Value<Int>
 
-    val days: List<String>
+    val timetable: Value<List<AvailabilityItem>>
 
-    val timetable: Value<List<AgendaItemWithAbsence>>
-    val account: MagisterAccount
-
-    val openedTimetableItem: Value<Pair<Boolean, AgendaItemWithAbsence?>>
+    val openedTimetableItem: Value<Pair<Boolean, AvailabilityItem?>>
 
     val selectedWeek: Value<Int>
 
@@ -65,12 +63,9 @@ interface PresenceComponent: MenuItemComponent {
         )
     }
 
-    fun getTimetableForWeek(timetable: List<AgendaItemWithAbsence>, startOfWeekDate: LocalDate): List<AgendaItemWithAbsence> {
+    fun getTimetableForWeek(timetable: List<AvailabilityItem>, startOfWeekDate: LocalDate): List<AvailabilityItem> {
         return timetable.filter {
-            val startTime =
-                it.agendaItem.start.substring(0, 26).toLocalDateTime()
-
-            startTime.date in startOfWeekDate..startOfWeekDate.plus(
+            it.startDateTime.date in startOfWeekDate..startOfWeekDate.plus(
                 6,
                 DateTimeUnit.DAY
             )
@@ -79,7 +74,7 @@ interface PresenceComponent: MenuItemComponent {
 
     val backCallbackOpenItem: BackCallback
 
-    fun openTimeTableItem(item: AgendaItemWithAbsence) {
+    fun openTimeTableItem(item: AvailabilityItem) {
         backCallbackOpenItem.isEnabled = true
 
         (openedTimetableItem as MutableValue).value = true to item
@@ -95,19 +90,8 @@ class DefaultPresenceComponent(
     override val now: MutableValue<LocalDateTime> = MutableValue(Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam")))
     override val currentPage = MutableValue(500 + now.value.date.dayOfWeek.ordinal)
 
-    override val days = listOf(
-        "mon",
-        "tue",
-        "wed",
-        "thu",
-        "fri",
-        "sat",
-        "sun"
-    )
-
-    override val timetable: MutableValue<List<AgendaItemWithAbsence>> = MutableValue(emptyList())
-    override val account: MagisterAccount = Data.selectedAccount
-    override val openedTimetableItem: MutableValue<Pair<Boolean, AgendaItemWithAbsence?>> = MutableValue(false to null)
+    override val timetable: MutableValue<List<AvailabilityItem>> = MutableValue(emptyList())
+    override val openedTimetableItem: MutableValue<Pair<Boolean, AvailabilityItem?>> = MutableValue(false to null)
 
     override val selectedWeek = MutableValue(floor((currentPage.value - (amountOfDays / 2).toFloat()) / days.size).toInt())
 
@@ -128,39 +112,7 @@ class DefaultPresenceComponent(
             try {
                 println("Refreshing agenda for week $selectedWeek")
 
-                val timeTableWeek = getAbsences(
-                    account.accountId,
-                    account.tenantUrl,
-                    account.tokens.accessToken,
-                    "${from.year}-${from.month}-${from.dayOfMonth}",
-                    "${to.year}-${to.month}-${to.dayOfMonth}",
-                    getMagisterAgenda(
-                        account.accountId,
-                        account.tenantUrl,
-                        account.tokens.accessToken,
-                        from,
-                        to
-                    )
-                )
-
-                if (selectedWeek.value == 0) {
-                    println("Saving agenda for current week")
-                    account.agenda = timeTableWeek
-                }
-
-                timeTableWeek.forEach {
-                    if (timetable.value.find { item -> item.agendaItem.id == it.agendaItem.id } == null) {
-                        timetable.value = timetable.value + it
-                    } else {
-                        timetable.value = timetable.value.map { item ->
-                            if (item.agendaItem.id == it.agendaItem.id) {
-                                it
-                            } else {
-                                item
-                            }
-                        }
-                    }
-                }
+                timetable.value = readAvailability() ?: emptyList()
             } catch (e: MagisterException) {
                 e.printStackTrace()
             } catch (e: Exception) {
@@ -205,3 +157,12 @@ class DefaultPresenceComponent(
     }
 
 }
+
+fun List<AvailabilityItem>.getAgendaForDay(day: Int): List<AvailabilityItem> {
+    return this.filter { item ->
+        item.startDateTime.dayOfWeek.ordinal == day
+    }
+}
+
+val AvailabilityItem.startDateTime get() = Instant.fromEpochSeconds(startTime).toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+val AvailabilityItem.endDateTime get() = Instant.fromEpochSeconds(endTime).toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
