@@ -36,6 +36,10 @@ object Data {
         get() = settings.getStringOrNull("userRankString")
         set(value) = settings.putString("userRankString", value ?: AVTRanks.Brugger.name)
 
+    var onboardingCompleted
+        get() = settings.getBoolean("onboardingCompleted", false)
+        set(value) = settings.putBoolean("onboardingCompleted", value)
+
     fun clearData() {
         settings.clear()
     }

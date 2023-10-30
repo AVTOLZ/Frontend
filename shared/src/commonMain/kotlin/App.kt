@@ -13,6 +13,7 @@ import ui.DefaultRootComponent
 import ui.RootComponent
 import ui.login.LoginScreen
 import ui.main.MainScreen
+import ui.onboarding.OnboardingScreen
 import ui.register.RegisterScreen
 import ui.verify.VerificationScreen
 
@@ -30,6 +31,7 @@ fun App(component: RootComponent) {
                 is RootComponent.Child.MainScreen -> MainScreen(child.component)
                 is RootComponent.Child.Verify -> VerificationScreen(child.component)
                 is RootComponent.Child.Register -> RegisterScreen(child.component)
+                is RootComponent.Child.Onboarding -> OnboardingScreen(component)
             }
         }
     }
