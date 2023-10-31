@@ -1,6 +1,7 @@
 
 package ui
 
+import Data
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
@@ -39,6 +40,8 @@ interface RootComponent {
         class Verify(val component: VerificationComponent) : Child()
 
         class Register(val component: RegisterComponent) : Child()
+
+        data object Onboarding : Child()
     }
 
     @Serializable // kotlinx-serialization plugin must be applied
@@ -54,7 +57,12 @@ interface RootComponent {
 
         @Serializable
         data object Register : Config
+
+        @Serializable
+        data object Onboarding : Config
     }
+
+    fun getInitialConfiguration(): Config
 }
 
 class DefaultRootComponent(
@@ -71,7 +79,11 @@ class DefaultRootComponent(
             childFactory = ::child,
         )
 
-    private fun getInitialConfiguration(): RootComponent.Config {
+    override fun getInitialConfiguration(): RootComponent.Config {
+        if (!Data.onboardingCompleted) {
+            return RootComponent.Config.Onboarding
+        }
+
         if (Data.bearerToken == null) {
             return RootComponent.Config.Login
         }
@@ -87,6 +99,7 @@ class DefaultRootComponent(
             is RootComponent.Config.Main -> RootComponent.Child.MainScreen(mainComponent(componentContext))
             is RootComponent.Config.Verify -> RootComponent.Child.Verify(verificationComponent(componentContext))
             is RootComponent.Config.Register -> RootComponent.Child.Register(registerComponent(componentContext))
+            is RootComponent.Config.Onboarding -> RootComponent.Child.Onboarding
         }
 
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =

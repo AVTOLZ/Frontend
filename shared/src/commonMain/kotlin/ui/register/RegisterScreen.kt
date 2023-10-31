@@ -5,7 +5,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import api.accounts.register
 import kotlinx.coroutines.runBlocking
 import ui.GeneralUI.InputTextField
@@ -18,6 +22,7 @@ fun RegisterScreen(component: RegisterComponent) {
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
+    var errorString by remember { mutableStateOf("") }
 
     Box(modifier = Modifier.fillMaxSize()) {
         var magisterScreenVisible by remember { mutableStateOf(false) }
@@ -33,6 +38,14 @@ fun RegisterScreen(component: RegisterComponent) {
                 text = "Sign up",
                 style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            Text(
+                text = errorString,
+                color = Color.Red,
+                modifier = Modifier
+                    .padding(bottom = 5.dp),
+                fontSize = 25.sp
             )
 
             InputTextField(
@@ -67,11 +80,16 @@ fun RegisterScreen(component: RegisterComponent) {
 
             Button(
                 onClick = {
+
                     val success = runBlocking {
                         register(username, password, email, firstName, lastName)
                     }
 
-                    if (success) {
+                    if (success == null) {
+                        errorString = "This username or email is already in use."
+                    }
+
+                    if (success == true) {
                         component.parent.clearStack(RootComponent.Config.Verify)
                     }
                 },

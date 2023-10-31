@@ -9,7 +9,7 @@ import io.ktor.http.*
 suspend fun readAvailability() : List<AvailabilityItem>? {
     val request = client.get(availabilityUrl.build()) {
         contentType(ContentType.Application.Json)
-        setBody(ReadAvailabilityRequest(Data.bearerToken.toString()))
+        bearerAuth(Data.bearerToken ?: return null)
     }
 
     return if (request.status == HttpStatusCode.OK) {
