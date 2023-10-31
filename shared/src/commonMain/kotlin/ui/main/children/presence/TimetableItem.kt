@@ -92,9 +92,9 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onClick: () -> Uni
                     checked = it
 
                     val requestType: HourRequestType = if (it) {
-                        HourRequestType.absent
+                        HourRequestType.Absent
                     } else {
-                        HourRequestType.nothing
+                        HourRequestType.Nothing
                     }
 
                     runBlocking {

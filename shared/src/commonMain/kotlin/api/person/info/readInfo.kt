@@ -12,10 +12,6 @@ suspend fun readInfo() : Boolean {
         bearerAuth(Data.bearerToken ?: return false)
     }
 
-    println(infoUrl.build())
-
-    println(request.status)
-
     if (request.status == HttpStatusCode.OK) {
         val res = request.body<ReadInfoResponse>()
         Data.username = res.username
