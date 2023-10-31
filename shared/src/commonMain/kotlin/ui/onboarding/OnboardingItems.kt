@@ -26,19 +26,19 @@ internal class OnboardingItems(
             return listOf(
                 OnboardingItems(
                     title = "Welcome to the AVT app",
-                    desc = "By Abel, Tiebe and Koen"
+                    desc = "By Abel, Tiebe and Koen."
                 ),
                 OnboardingItems(
-                    title = "What is this app",
-                    desc = "This app is designed to assist with managing the AVT \n" +
-                            "you can easily get an overview of upcoming event and request to be present"
+                    title = "What is this app?",
+                    desc = "This app is designed to assist with managing the AVT. \n" +
+                            "you can easily get an overview of upcoming event and request to be present."
                 ),
                 OnboardingItems(
                     title = "Logging in",
-                    desc = "There are two methods you can use to log in \n" +
-                            "1: with a username, password and email. this gives access to the basic features \n" +
+                    desc = "There are two methods you can use to log in: \n" +
+                            "1: with a username, password and email. this gives access to the basic features. \n" +
                             "2: via magister. by logging in with magister, our systems can automatically check whether " +
-                            "you are allowed to help in accordance to school rules. this gives access to all features"
+                            "you are allowed to help in accordance to school rules. this gives access to all features."
                 )
             )
         }
