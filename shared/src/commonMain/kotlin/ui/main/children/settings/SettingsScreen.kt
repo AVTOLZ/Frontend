@@ -13,6 +13,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ui.RootComponent
+import ui.login.LoginComponent
+import ui.login.LoginScreen
+import ui.main.DefaultMainComponent
+import ui.main.MainComponent
 
 @Composable
 fun SettingsScreen(component: SettingsComponent) {
@@ -38,6 +43,7 @@ fun SettingsScreen(component: SettingsComponent) {
 
         Button(onClick = {
             Data.clearData()
+            component.parent.parent.navigateTo(RootComponent.Config.Onboarding)
         },
             modifier = Modifier
                 .fillMaxWidth()

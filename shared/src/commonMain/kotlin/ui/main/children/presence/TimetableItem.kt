@@ -67,7 +67,7 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onClick: () -> Uni
 
     // TODO implement approved time hours
 
-    var checked by remember { mutableStateOf(item.status == HourStatus.Requested) }
+    var checked by remember { mutableStateOf(item.status != HourStatus.Open) }
 
     ListItem(
         modifier = modifier
@@ -82,6 +82,13 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onClick: () -> Uni
             Checkbox(
                 checked = checked,
                 onCheckedChange = {
+
+                    // TODO change this, this is temporary
+                    // it means if an admin approved your request you cant unrequest it
+                    if (item.status == HourStatus.Approved) {
+                        return@Checkbox
+                    }
+
                     checked = it
 
                     val requestType: HourRequestType = if (it) {
