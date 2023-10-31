@@ -86,7 +86,7 @@ fun RegisterScreen(component: RegisterComponent) {
                     }
 
                     if (success == null) {
-                        errorString = "the username or email is already in use"
+                        errorString = "This username or email is already in use."
                     }
 
                     if (success == true) {
