@@ -24,7 +24,7 @@ class DefaultVerificationComponent(
         }
 
         if (success) {
-            parent.navigateTo(RootComponent.Config.Main)
+            parent.clearStack(RootComponent.Config.Main)
         }
     }
 

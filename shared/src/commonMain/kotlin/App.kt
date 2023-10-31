@@ -1,4 +1,6 @@
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,10 +15,10 @@ import ui.DefaultRootComponent
 import ui.RootComponent
 import ui.login.LoginScreen
 import ui.main.MainScreen
+import ui.onboarding.OnboardingScreen
 import ui.register.RegisterScreen
 import ui.verify.VerificationScreen
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App(component: RootComponent) {
     MaterialTheme {
@@ -30,6 +32,7 @@ fun App(component: RootComponent) {
                 is RootComponent.Child.MainScreen -> MainScreen(child.component)
                 is RootComponent.Child.Verify -> VerificationScreen(child.component)
                 is RootComponent.Child.Register -> RegisterScreen(child.component)
+                is RootComponent.Child.Onboarding -> OnboardingScreen(component)
             }
         }
     }

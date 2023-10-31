@@ -1,18 +1,27 @@
 
 package ui
 
+import Data
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
+import com.arkivanov.essenty.lifecycle.Lifecycle
+import com.arkivanov.essenty.lifecycle.LifecycleOwner
+import com.arkivanov.essenty.lifecycle.doOnDestroy
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.cancel
 import ui.login.LoginComponent
 import kotlinx.serialization.Serializable
 import ui.login.DefaultLoginComponent
 import ui.main.DefaultMainComponent
 import ui.main.MainComponent
+import ui.main.children.presence.DefaultPresenceComponent
+import ui.main.children.presence.PresenceComponent
 import ui.register.DefaultRegisterComponent
 import ui.register.RegisterComponent
 import ui.verify.DefaultVerificationComponent
 import ui.verify.VerificationComponent
+import kotlin.coroutines.CoroutineContext
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -20,6 +29,8 @@ interface RootComponent {
     fun onBackClicked(toIndex: Int)
 
     fun navigateTo(config: Config)
+
+    fun clearStack(newConfig: Config)
 
     sealed class Child {
         class LoginChild(val component: LoginComponent) : Child()
@@ -29,6 +40,8 @@ interface RootComponent {
         class Verify(val component: VerificationComponent) : Child()
 
         class Register(val component: RegisterComponent) : Child()
+
+        data object Onboarding : Child()
     }
 
     @Serializable // kotlinx-serialization plugin must be applied
@@ -44,7 +57,12 @@ interface RootComponent {
 
         @Serializable
         data object Register : Config
+
+        @Serializable
+        data object Onboarding : Config
     }
+
+    fun getInitialConfiguration(): Config
 }
 
 class DefaultRootComponent(
@@ -61,7 +79,11 @@ class DefaultRootComponent(
             childFactory = ::child,
         )
 
-    private fun getInitialConfiguration(): RootComponent.Config {
+    override fun getInitialConfiguration(): RootComponent.Config {
+        if (!Data.onboardingCompleted) {
+            return RootComponent.Config.Onboarding
+        }
+
         if (Data.bearerToken == null) {
             return RootComponent.Config.Login
         }
@@ -77,6 +99,7 @@ class DefaultRootComponent(
             is RootComponent.Config.Main -> RootComponent.Child.MainScreen(mainComponent(componentContext))
             is RootComponent.Config.Verify -> RootComponent.Child.Verify(verificationComponent(componentContext))
             is RootComponent.Config.Register -> RootComponent.Child.Register(registerComponent(componentContext))
+            is RootComponent.Config.Onboarding -> RootComponent.Child.Onboarding
         }
 
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
@@ -95,7 +118,22 @@ class DefaultRootComponent(
         navigation.popTo(index = toIndex)
     }
 
-    override fun navigateTo(child: RootComponent.Config) {
-        navigation.push(child)
+    override fun navigateTo(config: RootComponent.Config) {
+        navigation.push(config)
+    }
+
+    override fun clearStack(newConfig: RootComponent.Config) {
+        navigation.replaceAll(newConfig)
     }
 }
+
+fun CoroutineScope(context: CoroutineContext, lifecycle: Lifecycle): CoroutineScope {
+    val scope = CoroutineScope(context)
+    lifecycle.doOnDestroy(scope::cancel)
+    return scope
+}
+
+fun LifecycleOwner.componentCoroutineScope(context: CoroutineContext): CoroutineScope =
+    CoroutineScope(context, lifecycle)
+
+fun LifecycleOwner.coroutineScope(context: CoroutineContext) = componentCoroutineScope(context)
