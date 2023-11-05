@@ -12,10 +12,7 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
 import dev.tiebe.magisterapi.api.absence.AbsenceFlow.getAbsences
 import dev.tiebe.magisterapi.utils.MagisterException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.datetime.*
 import ui.componentCoroutineScope
 import ui.main.MainComponent
@@ -46,9 +43,6 @@ interface PresenceComponent: MenuItemComponent {
     val selectedWeek: Value<Int>
 
     val isRefreshingTimetable: Value<Boolean>
-
-    val scope: CoroutineScope
-        get() = rememberCoroutineScope()
 
     fun changeDay(day: Int)
 
@@ -109,7 +103,7 @@ class DefaultPresenceComponent(
     }
 
     override fun refreshTimetable(from: LocalDate, to: LocalDate) {
-        scope.launch {
+        runBlocking {
             isRefreshingTimetable.value = true
             try {
                 println("Refreshing agenda for week $selectedWeek")
@@ -149,7 +143,7 @@ class DefaultPresenceComponent(
             refreshSelectedWeek()
         }
 
-        scope.launch {
+        runBlocking {
             while (true) {
                 now.value = Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
 

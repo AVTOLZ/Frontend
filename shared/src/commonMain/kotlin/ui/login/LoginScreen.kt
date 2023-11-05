@@ -15,6 +15,7 @@ import dev.avt.app.MR
 import dev.icerock.moko.resources.compose.painterResource
 import dev.tiebe.magisterapi.api.account.LoginFlow
 import io.ktor.http.*
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ui.GeneralUI
 import ui.RootComponent
@@ -23,6 +24,8 @@ import ui.RootComponent
 fun LoginScreen(component: LoginComponent) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
         var magisterScreenVisible by remember { mutableStateOf(false) }
@@ -70,10 +73,16 @@ fun LoginScreen(component: LoginComponent) {
                         login(username, password)
                     }
 
-                    if (success) {
-                        component.parent.navigateTo(RootComponent.Config.Main)
-                    } else {
-                        errorMessage = "Invalid username or password"
+                    when (success) {
+                        null -> {
+                            scope.launch { component.parent.snackbarHost.showSnackbar("there was an error logging in") }
+                        }
+                        true -> {
+                            component.parent.navigateTo(RootComponent.Config.Main)
+                        }
+                        false -> {
+                            errorMessage = "Invalid username or password"
+                        }
                     }
                 },
                 modifier = Modifier
@@ -129,11 +138,18 @@ fun LoginScreen(component: LoginComponent) {
                     magisterLogin(tokens.refreshToken)
                 }
 
-                if (success) {
-                    component.parent.navigateTo(RootComponent.Config.Main)
-                } else {
-                    errorMessage = "Error while signing into Magister, please try again."
-                    magisterScreenVisible = false
+                when (success) {
+                    null -> {
+                        scope.launch { component.parent.snackbarHost.showSnackbar("there was an error connecting to the server") }
+                        return@MagisterLoginWebView false
+                    }
+                    true -> {
+                        component.parent.navigateTo(RootComponent.Config.Main)
+                    }
+                    false -> {
+                        errorMessage = "Error while signing into Magister, please try again."
+                        magisterScreenVisible = false
+                    }
                 }
 
                 return@MagisterLoginWebView success

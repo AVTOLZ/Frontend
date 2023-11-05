@@ -31,7 +31,7 @@ fun SettingsScreen(component: SettingsComponent) {
     val res = runBlocking { readInfo() }
 
     if (res == null) {
-        scope.launch { component.parent.snackbarHost.showSnackbar("") }
+        scope.launch { component.parent.snackbarHost.showSnackbar("There was an error retrieving user data.") }
     }
 
     Column(

@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import api.accounts.register
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import ui.GeneralUI.InputTextField
 import ui.RootComponent
@@ -23,6 +24,8 @@ fun RegisterScreen(component: RegisterComponent) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var errorString by remember { mutableStateOf("") }
+
+    val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
         var magisterScreenVisible by remember { mutableStateOf(false) }
@@ -91,6 +94,10 @@ fun RegisterScreen(component: RegisterComponent) {
 
                     if (success == true) {
                         component.parent.clearStack(RootComponent.Config.Verify)
+                    }
+
+                    if (success == false) {
+                        scope.launch { component.parent.snackbarHost.showSnackbar("There was a connection error with the server, please try again later") }
                     }
                 },
                 modifier = Modifier
