@@ -12,6 +12,8 @@ suspend fun postRequest(url: Url, body: Any?): HttpResponse? {
             contentType(ContentType.Application.Json)
             bearerAuth(Data.bearerToken ?: "")
             setBody(body ?: "")
+
+            timeout {  }
         }
     } catch (error: Throwable) {
         error.printStackTrace()
