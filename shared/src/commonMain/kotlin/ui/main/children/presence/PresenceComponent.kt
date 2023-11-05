@@ -102,8 +102,10 @@ class DefaultPresenceComponent(
             selectedWeek.value = floor((day - (amountOfDays / 2).toFloat()) / days.size).toInt()
     }
 
+    private val scope = componentCoroutineScope(SupervisorJob())
+
     override fun refreshTimetable(from: LocalDate, to: LocalDate) {
-        runBlocking {
+        scope.launch {
             isRefreshingTimetable.value = true
             try {
                 println("Refreshing agenda for week $selectedWeek")
@@ -143,7 +145,7 @@ class DefaultPresenceComponent(
             refreshSelectedWeek()
         }
 
-        runBlocking {
+        scope.launch {
             while (true) {
                 now.value = Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
 

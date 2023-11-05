@@ -12,7 +12,7 @@ val client = HttpClient {
         json()
     }
     install(HttpTimeout) {
-        requestTimeoutMillis = 1000
+        requestTimeoutMillis = 5000
     }
 }
 
