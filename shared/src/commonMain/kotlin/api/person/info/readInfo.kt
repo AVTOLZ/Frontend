@@ -2,15 +2,13 @@ package api.person.info
 
 import api.client
 import api.infoUrl
+import api.requests.getRequest
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-suspend fun readInfo() : Boolean {
-    val request = client.get(infoUrl.build()) {
-        contentType(ContentType.Application.Json)
-        bearerAuth(Data.bearerToken ?: return false)
-    }
+suspend fun readInfo() : Boolean? {
+    val request = getRequest(infoUrl.build(), null) ?: return null
 
     if (request.status == HttpStatusCode.OK) {
         val res = request.body<ReadInfoResponse>()

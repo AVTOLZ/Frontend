@@ -21,6 +21,7 @@ import api.person.absence.availability.HourStatus
 import api.person.absence.requestHours.HourRequestType
 import api.person.absence.requestHours.requestHours
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
 import kotlin.time.DurationUnit
@@ -46,6 +47,7 @@ internal fun TimetableItems(
         val timeTop = selectedDayDate.atStartOfDayIn(TimeZone.of("Europe/Amsterdam")).plus(timesShown.first(), DateTimeUnit.HOUR)
 
         val timetable = component.timetable.subscribeAsState()
+        val scope = rememberCoroutineScope()
 
         component.getTimetableForWeek(timetable.value, startOfWeekDate).getAgendaForDay(page % 7)
             .forEach { availabilityItem ->
@@ -53,7 +55,7 @@ internal fun TimetableItems(
                 var distanceAfterTop = dpPerHour * (Instant.fromEpochSeconds(availabilityItem.startTime) - timeTop).toDouble(DurationUnit.HOURS).toFloat()
                 if (distanceAfterTop < 0.dp) distanceAfterTop = 0.dp
 
-                TimetableItem(item = availabilityItem, modifier = Modifier.padding(start = 40.5.dp, top = distanceAfterTop).height(height)) {
+                TimetableItem(item = availabilityItem, modifier = Modifier.padding(start = 40.5.dp, top = distanceAfterTop).height(height), onError = { scope.launch { component.parent.snackbarHost.showSnackbar(it) }}) {
                     component.openTimeTableItem(availabilityItem)
                 }
             }
@@ -62,7 +64,7 @@ internal fun TimetableItems(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onClick: () -> Unit) {
+fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) -> Unit, onClick: () -> Unit) {
     val supportingText = mutableListOf<String>("prachtige description")
 
     // TODO implement approved time hours
@@ -99,6 +101,13 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onClick: () -> Uni
 
                     runBlocking {
                         val res = requestHours(item.id, requestType)
+
+                        if (res == null) {
+                            onError("Could not connect to server. Please try again later.")
+                            checked = !it
+                            return@runBlocking
+                        }
+
                         if (!res) {
                             checked = !it
                         }

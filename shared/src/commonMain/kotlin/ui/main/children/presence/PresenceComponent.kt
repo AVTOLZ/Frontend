@@ -2,6 +2,7 @@ package ui.main.children.presence
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.runtime.rememberCoroutineScope
 import api.person.absence.availability.AvailabilityItem
 import api.person.absence.availability.readAvailability
 import com.arkivanov.decompose.ComponentContext
@@ -45,6 +46,9 @@ interface PresenceComponent: MenuItemComponent {
     val selectedWeek: Value<Int>
 
     val isRefreshingTimetable: Value<Boolean>
+
+    val scope: CoroutineScope
+        get() = rememberCoroutineScope()
 
     fun changeDay(day: Int)
 
@@ -104,15 +108,13 @@ class DefaultPresenceComponent(
             selectedWeek.value = floor((day - (amountOfDays / 2).toFloat()) / days.size).toInt()
     }
 
-    private val scope = componentCoroutineScope(SupervisorJob())
-
     override fun refreshTimetable(from: LocalDate, to: LocalDate) {
         scope.launch {
             isRefreshingTimetable.value = true
             try {
                 println("Refreshing agenda for week $selectedWeek")
 
-                timetable.value = readAvailability() ?: emptyList()
+                timetable.value = readAvailability()
             } catch (e: MagisterException) {
                 e.printStackTrace()
             } catch (e: Exception) {
