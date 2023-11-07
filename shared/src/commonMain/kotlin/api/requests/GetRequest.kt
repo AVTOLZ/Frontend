@@ -6,11 +6,13 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-suspend fun getRequest(url: Url, body: Any?): HttpResponse? {
+suspend fun getRequest(url: Url, body: Any? = null): HttpResponse? {
     return try {
         client.get(url) {
             contentType(ContentType.Application.Json)
-            bearerAuth(Data.bearerToken ?: "")
+            if (Data.bearerToken != null) {
+                bearerAuth(Data.bearerToken.toString())
+            }
             setBody(body ?: "")
 
             timeout {  }

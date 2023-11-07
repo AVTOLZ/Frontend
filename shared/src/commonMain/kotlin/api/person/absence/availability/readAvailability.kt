@@ -7,13 +7,13 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-suspend fun readAvailability() : List<AvailabilityItem> {
-    val request = getRequest(availabilityUrl.build(), null) ?: return emptyList()
+suspend fun readAvailability() : List<AvailabilityItem>? {
+    val request = getRequest(availabilityUrl.build()) ?: return null
 
     return if (request.status == HttpStatusCode.OK) {
         request.body<ReadAvailabilityResponse>().hours
     }
     else {
-        emptyList()
+        null
     }
 }

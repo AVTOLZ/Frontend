@@ -23,7 +23,7 @@ class DefaultVerificationComponent(
             return@runBlocking verifyAccount(Data.personId, code.toIntOrNull() ?: return@runBlocking false)
         }
 
-        if (success == null){
+        if (success != true){
             runBlocking {
             parent.snackbarHost.showSnackbar("There was an error validating your request") }
         }

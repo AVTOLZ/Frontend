@@ -8,7 +8,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 
 suspend fun readInfo() : Boolean? {
-    val request = getRequest(infoUrl.build(), null) ?: return null
+    val request = getRequest(infoUrl.build()) ?: return null
 
     if (request.status == HttpStatusCode.OK) {
         val res = request.body<ReadInfoResponse>()
