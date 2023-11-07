@@ -74,15 +74,9 @@ fun LoginScreen(component: LoginComponent) {
                     }
 
                     when (success) {
-                        null -> {
-                            scope.launch { component.parent.snackbarHost.showSnackbar("there was an error logging in") }
-                        }
-                        true -> {
-                            component.parent.navigateTo(RootComponent.Config.Main)
-                        }
-                        false -> {
-                            errorMessage = "Invalid username or password"
-                        }
+                        null -> scope.launch { component.parent.snackbarHost.showSnackbar("There was an error logging in.") }
+                        true -> component.parent.navigateTo(RootComponent.Config.Main)
+                        false -> errorMessage = "Invalid username or password."
                     }
                 },
                 modifier = Modifier
