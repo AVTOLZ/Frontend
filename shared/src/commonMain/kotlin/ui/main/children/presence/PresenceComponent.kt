@@ -5,16 +5,11 @@ import androidx.compose.foundation.pager.PagerState
 import api.person.absence.availability.AvailabilityItem
 import api.person.absence.availability.readAvailability
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
-import dev.tiebe.magisterapi.api.absence.AbsenceFlow.getAbsences
 import dev.tiebe.magisterapi.utils.MagisterException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.datetime.*
 import ui.componentCoroutineScope
 import ui.main.MainComponent
@@ -112,7 +107,14 @@ class DefaultPresenceComponent(
             try {
                 println("Refreshing agenda for week $selectedWeek")
 
-                timetable.value = readAvailability() ?: emptyList()
+                var tableList = readAvailability()
+
+                if (tableList == null) {
+                    parent.parent.snackbarHost.showSnackbar("There was an error retrieving data from the server")
+                    tableList = emptyList()
+                }
+
+                timetable.value = tableList
             } catch (e: MagisterException) {
                 e.printStackTrace()
             } catch (e: Exception) {

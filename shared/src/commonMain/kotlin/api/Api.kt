@@ -1,6 +1,8 @@
 package api
 
+import Data
 import io.ktor.client.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -8,6 +10,9 @@ import io.ktor.serialization.kotlinx.json.*
 val client = HttpClient {
     install(ContentNegotiation) {
         json()
+    }
+    install(HttpTimeout) {
+        requestTimeoutMillis = 5000
     }
 }
 

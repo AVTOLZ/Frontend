@@ -23,6 +23,7 @@ fun MainScreen(component: MainComponent) {
     )
 
     Scaffold(
+        snackbarHost = { SnackbarHost(component.snackbarHost) },
         bottomBar = {
             NavigationBar(contentColor = MaterialTheme.colorScheme.onPrimary, containerColor = MaterialTheme.colorScheme.primary) {
                 items.forEach { screen ->

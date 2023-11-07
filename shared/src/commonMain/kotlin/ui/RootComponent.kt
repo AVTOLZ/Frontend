@@ -2,6 +2,7 @@
 package ui
 
 import Data
+import androidx.compose.material3.SnackbarHostState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
@@ -31,6 +32,8 @@ interface RootComponent {
     fun navigateTo(config: Config)
 
     fun clearStack(newConfig: Config)
+
+    val snackbarHost: SnackbarHostState
 
     sealed class Child {
         class LoginChild(val component: LoginComponent) : Child()
@@ -125,6 +128,8 @@ class DefaultRootComponent(
     override fun clearStack(newConfig: RootComponent.Config) {
         navigation.replaceAll(newConfig)
     }
+
+    override val snackbarHost = SnackbarHostState()
 }
 
 fun CoroutineScope(context: CoroutineContext, lifecycle: Lifecycle): CoroutineScope {

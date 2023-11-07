@@ -4,6 +4,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import api.person.info.readInfo
 import com.arkivanov.decompose.ComponentContext
@@ -29,6 +30,8 @@ interface MenuItemComponent {
 interface MainComponent {
     val parent: RootComponent
 
+    val snackbarHost: SnackbarHostState
+
     fun navigateTo(config: Config)
 
     @Serializable // kotlinx-serialization plugin must be applied
@@ -52,6 +55,8 @@ class DefaultMainComponent(
     componentContext: ComponentContext, override val parent: RootComponent,
 ) : MainComponent, ComponentContext by componentContext {
     private val dialogNavigation = SlotNavigation<MainComponent.Config>()
+
+    override val snackbarHost = SnackbarHostState()
 
     override val dialog: Value<ChildSlot<MainComponent.Config, MenuItemComponent>> = childSlot(
         source = dialogNavigation,

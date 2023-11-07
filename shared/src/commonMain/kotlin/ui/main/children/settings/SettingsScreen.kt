@@ -7,12 +7,16 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import api.person.info.readInfo
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import ui.RootComponent
 import ui.login.LoginComponent
 import ui.login.LoginScreen
@@ -21,6 +25,15 @@ import ui.main.MainComponent
 
 @Composable
 fun SettingsScreen(component: SettingsComponent) {
+
+    val scope = rememberCoroutineScope()
+
+    val res = runBlocking { readInfo() }
+
+    if (res == null) {
+        scope.launch { component.parent.snackbarHost.showSnackbar("There was an error retrieving user data.") }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
