@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import api.person.absence.availability.AvailabilityItem
 import api.person.absence.availability.HourStatus
+import api.person.absence.present.announcePresence
 import api.person.absence.requestHours.HourRequestType
 import api.person.absence.requestHours.requestHours
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
@@ -69,7 +70,8 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
 
     // TODO implement approved time hours
 
-    var checked by remember { mutableStateOf(item.status != HourStatus.Open) }
+    var checkedPresent by remember { mutableStateOf( item.markedPresence) }
+    var checkedAbsence by remember { mutableStateOf(item.status != HourStatus.Open ) }
 
     ListItem(
         modifier = modifier
@@ -80,40 +82,66 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
             /* TODO: Description here or something */
         },
         trailingContent = {
-            /* TODO: Abel place checkmarks here */
-            Checkbox(
-                checked = checked,
-                onCheckedChange = {
+            Row {
+                Checkbox(
+                    checked = checkedPresent,
+                    onCheckedChange = {
 
-                    // TODO change this, this is temporary
-                    // it means if an admin approved your request you cant unrequest it
-                    if (item.status == HourStatus.Approved) {
-                        return@Checkbox
-                    }
+                        checkedPresent = it
 
-                    checked = it
+                        runBlocking {
+                            val res = announcePresence(item.id, !it)
 
-                    val requestType: HourRequestType = if (it) {
-                        HourRequestType.ABSENT
-                    } else {
-                        HourRequestType.NOTHING
-                    }
-
-                    runBlocking {
-                        val res = requestHours(item.id, requestType)
-
-                        if (res == null) {
-                            onError("Could not connect to server. Please try again later.")
-                            checked = !it
-                            return@runBlocking
+                            if (res != true) {
+                                onError("There was an error communicating with the server")
+                                checkedPresent = !it
+                                return@runBlocking
+                            }
                         }
 
-                        if (!res) {
-                            checked = !it
-                        }
+                        // TODO implement this on backend
+//                    if ((checkedPresent == it).and(it)) {
+//                        checkedAbsence = false
+//                    }
                     }
-                }
-            )
+                )
+                /* TODO: Abel place checkmarks here */
+                Checkbox(
+                    checked = checkedAbsence,
+                    colors = CheckboxDefaults.colors(),
+                    onCheckedChange = {
+
+                        /* TODO change this, this is temporary
+                    it means if an admin approved your request you cant unrequest it */
+                        if (item.status == HourStatus.Approved) {
+                            return@Checkbox
+                        }
+
+                        checkedAbsence = it
+
+                        val requestType: HourRequestType = if (it) {
+                            HourRequestType.ABSENT
+                        } else {
+                            HourRequestType.NOTHING
+                        }
+
+                        runBlocking {
+                            val res = requestHours(item.id, requestType)
+
+                            if (res != true) {
+                                onError("There was an error communicating with the server.")
+                                checkedAbsence = !it
+                                return@runBlocking
+                            }
+                        }
+
+                        // TODO implement this on backend
+//                    if ((checkedAbsence == it).and(it)) {
+//                        checkedPresent = false
+//                    }
+                    }
+                )
+            }
         },
     )
 }

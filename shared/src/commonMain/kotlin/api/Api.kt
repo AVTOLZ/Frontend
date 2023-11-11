@@ -30,3 +30,5 @@ val registerUrl = accountsUrl.clone().appendPathSegments("register")
 val verifyUrl = accountsUrl.clone().appendPathSegments("verify")
 
 val infoUrl get() = personUrl.clone().appendPathSegments("info")
+
+val presentUrl = personUrl.clone().appendPathSegments("announce_presence")
