@@ -17,9 +17,8 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import api.person.absence.availability.AvailabilityItem
-import api.person.absence.availability.HourStatus
+import api.person.absence.availability.PresenceType
 import api.person.absence.present.announcePresence
-import api.person.absence.requestHours.HourRequestType
 import api.person.absence.requestHours.requestHours
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import kotlinx.coroutines.launch
@@ -70,8 +69,8 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
 
     // TODO implement approved time hours
 
-    var checkedPresent by remember { mutableStateOf( item.markedPresence) }
-    var checkedAbsence by remember { mutableStateOf(item.status != HourStatus.Open ) }
+    var checkedPresent by remember { mutableStateOf( item.presentType == PresenceType.Present) }
+    var checkedAbsence by remember { mutableStateOf( item.presentType == PresenceType.Absence ) }
 
     ListItem(
         modifier = modifier
@@ -99,10 +98,9 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
                             }
                         }
 
-                        // TODO implement this on backend
-//                    if ((checkedPresent == it).and(it)) {
-//                        checkedAbsence = false
-//                    }
+                    if ((checkedPresent == it).and(it)) {
+                        checkedAbsence = false
+                    }
                     }
                 )
                 /* TODO: Abel place checkmarks here */
@@ -113,20 +111,14 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
 
                         /* TODO change this, this is temporary
                     it means if an admin approved your request you cant unrequest it */
-                        if (item.status == HourStatus.Approved) {
+                        if (item.approved) {
                             return@Checkbox
                         }
 
                         checkedAbsence = it
 
-                        val requestType: HourRequestType = if (it) {
-                            HourRequestType.ABSENT
-                        } else {
-                            HourRequestType.NOTHING
-                        }
-
                         runBlocking {
-                            val res = requestHours(item.id, requestType)
+                            val res = requestHours(item.id, !it)
 
                             if (res != true) {
                                 onError("There was an error communicating with the server.")
@@ -135,10 +127,9 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
                             }
                         }
 
-                        // TODO implement this on backend
-//                    if ((checkedAbsence == it).and(it)) {
-//                        checkedPresent = false
-//                    }
+                    if ((checkedAbsence == it).and(it)) {
+                        checkedPresent = false
+                    }
                     }
                 )
             }
