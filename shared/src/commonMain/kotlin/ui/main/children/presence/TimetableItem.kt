@@ -68,10 +68,8 @@ internal fun TimetableItems(
 fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) -> Unit, onClick: () -> Unit) {
     val supportingText = mutableListOf<String>("prachtige description")
 
-    // TODO grey out checkboxes if hour is approved
-
-    var checkedPresent by remember { mutableStateOf( item.presentType == PresenceType.Present) }
-    var checkedAbsence by remember { mutableStateOf( item.presentType == PresenceType.Absence ) }
+    var checkedPresent by remember { mutableStateOf( item.presentType == PresenceType.PRESENT) }
+    var checkedAbsence by remember { mutableStateOf( item.presentType == PresenceType.ABSENCE ) }
 
     ListItem(
         modifier = modifier
