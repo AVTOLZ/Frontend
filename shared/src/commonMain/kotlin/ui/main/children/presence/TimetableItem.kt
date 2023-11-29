@@ -17,11 +17,11 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import api.person.absence.availability.AvailabilityItem
-import api.person.absence.availability.HourStatus
+import api.person.absence.availability.PresenceType
 import api.person.absence.present.announcePresence
-import api.person.absence.requestHours.HourRequestType
 import api.person.absence.requestHours.requestHours
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import io.ktor.http.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
@@ -68,10 +68,8 @@ internal fun TimetableItems(
 fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) -> Unit, onClick: () -> Unit) {
     val supportingText = mutableListOf<String>("prachtige description")
 
-    // TODO implement approved time hours
-
-    var checkedPresent by remember { mutableStateOf( item.markedPresence) }
-    var checkedAbsence by remember { mutableStateOf(item.status != HourStatus.Open ) }
+    var checkedPresent by remember { mutableStateOf( item.presentType == PresenceType.PRESENT) }
+    var checkedAbsence by remember { mutableStateOf( item.presentType == PresenceType.ABSENCE ) }
 
     ListItem(
         modifier = modifier
@@ -85,6 +83,7 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
             Row {
                 Checkbox(
                     checked = checkedPresent,
+                    enabled = !item.approved,
                     onCheckedChange = {
 
                         checkedPresent = it
@@ -92,53 +91,53 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
                         runBlocking {
                             val res = announcePresence(item.id, !it)
 
-                            if (res != true) {
+                            if (res == HttpStatusCode.Conflict) {
+                                onError("The absence request has been approved \n" +
+                                        "to remove contact administrator")
+                                checkedPresent = !it
+                                return@runBlocking
+                            }
+
+                            if (res != HttpStatusCode.OK) {
                                 onError("There was an error communicating with the server")
                                 checkedPresent = !it
                                 return@runBlocking
                             }
                         }
 
-                        // TODO implement this on backend
-//                    if ((checkedPresent == it).and(it)) {
-//                        checkedAbsence = false
-//                    }
+                        if ((checkedPresent == it).and(it)) {
+                            checkedAbsence = false
+                        }
                     }
                 )
                 /* TODO: Abel place checkmarks here */
                 Checkbox(
                     checked = checkedAbsence,
-                    colors = CheckboxDefaults.colors(),
+                    enabled = !item.approved,
                     onCheckedChange = {
-
-                        /* TODO change this, this is temporary
-                    it means if an admin approved your request you cant unrequest it */
-                        if (item.status == HourStatus.Approved) {
-                            return@Checkbox
-                        }
 
                         checkedAbsence = it
 
-                        val requestType: HourRequestType = if (it) {
-                            HourRequestType.ABSENT
-                        } else {
-                            HourRequestType.NOTHING
-                        }
-
                         runBlocking {
-                            val res = requestHours(item.id, requestType)
+                            val res = requestHours(item.id, !it)
 
-                            if (res != true) {
+                            if (res == HttpStatusCode.Conflict) {
+                                onError("The absence request has been approved \n" +
+                                        "to remove contact administrator")
+                                checkedAbsence = !it
+                                return@runBlocking
+                            }
+
+                            if (res != HttpStatusCode.OK) {
                                 onError("There was an error communicating with the server.")
                                 checkedAbsence = !it
                                 return@runBlocking
                             }
                         }
 
-                        // TODO implement this on backend
-//                    if ((checkedAbsence == it).and(it)) {
-//                        checkedPresent = false
-//                    }
+                        if ((checkedAbsence == it).and(it)) {
+                            checkedPresent = false
+                        }
                     }
                 )
             }

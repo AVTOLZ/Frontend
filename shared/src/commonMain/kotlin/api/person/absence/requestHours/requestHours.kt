@@ -6,8 +6,8 @@ import api.requests.postRequest
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-suspend fun requestHours(hourId: Int, requestType: HourRequestType): Boolean? {
-    val request = postRequest(requestHoursUrl.build(), RequestHoursRequest(hourId, requestType)) ?: return null
+suspend fun requestHours(hourId: Int, remove: Boolean): HttpStatusCode? {
+    val request = postRequest(requestHoursUrl.build(), RequestHoursRequest(hourId, remove)) ?: return null
 
-    return request.status == HttpStatusCode.OK
+    return request.status
 }
