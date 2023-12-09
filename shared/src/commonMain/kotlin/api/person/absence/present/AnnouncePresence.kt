@@ -3,7 +3,6 @@ package api.person.absence.present
 import api.presentUrl
 import api.requests.deleteRequest
 import api.requests.postRequest
-import io.ktor.client.statement.*
 import io.ktor.http.*
 
 suspend fun announcePresence(id: Int, remove: Boolean) : HttpStatusCode? {

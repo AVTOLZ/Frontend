@@ -1,10 +1,8 @@
 package api.person.absence.requestHours
 
-import api.client
 import api.requestHoursUrl
 import api.requests.deleteRequest
 import api.requests.postRequest
-import io.ktor.client.request.*
 import io.ktor.http.*
 
 suspend fun requestHours(hourId: Int, remove: Boolean): HttpStatusCode? {
