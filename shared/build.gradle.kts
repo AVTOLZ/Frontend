@@ -73,7 +73,7 @@ kotlin {
                 implementation(libs.ktor.client.json.jvm)
                 implementation(libs.ktor.client.android)
 
-                api("androidx.activity:activity-compose:1.8.0")
+                api("androidx.activity:activity-compose:1.8.2")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.12.0")
             }
