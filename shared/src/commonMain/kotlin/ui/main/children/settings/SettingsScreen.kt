@@ -120,6 +120,7 @@ fun SettingsScreen(component: SettingsComponent) {
 
             when (success) {
                 true -> {
+                    scope.launch { component.parent.snackbarHost.showSnackbar("Successfully linked your Magister account.") }
                     magisterScreenVisible = false
                 }
                 false -> {
