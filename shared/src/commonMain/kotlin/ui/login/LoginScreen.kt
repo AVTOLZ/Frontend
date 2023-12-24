@@ -63,7 +63,8 @@ fun LoginScreen(component: LoginComponent) {
             GeneralUI.InputTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = "Password"
+                label = "Password",
+                passwordField = true
             )
 
 

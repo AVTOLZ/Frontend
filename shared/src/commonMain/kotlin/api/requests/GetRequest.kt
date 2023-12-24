@@ -9,13 +9,12 @@ import io.ktor.http.*
 suspend fun getRequest(url: Url, body: Any? = null): HttpResponse? {
     return try {
         client.get(url) {
-            contentType(ContentType.Application.Json)
             if (Data.bearerToken != null) {
                 bearerAuth(Data.bearerToken.toString())
             }
-            setBody(body ?: "")
-
-            timeout {  }
+            if (body != null) {
+                setBody(body)
+            }
         }
     } catch (error: Throwable) {
         error.printStackTrace()

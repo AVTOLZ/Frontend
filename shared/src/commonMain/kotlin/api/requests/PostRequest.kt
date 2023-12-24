@@ -13,9 +13,9 @@ suspend fun postRequest(url: Url, body: Any? = null): HttpResponse? {
             if (Data.bearerToken != null) {
                 bearerAuth(Data.bearerToken.toString())
             }
-            setBody(body ?: "")
-
-            timeout {  }
+            if (body != null) {
+                setBody(body)
+            }
         }
     } catch (error: Throwable) {
         error.printStackTrace()
