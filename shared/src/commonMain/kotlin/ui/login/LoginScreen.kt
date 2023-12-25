@@ -63,7 +63,8 @@ fun LoginScreen(component: LoginComponent) {
             GeneralUI.InputTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = "Password"
+                label = "Password",
+                passwordField = true
             )
 
 
@@ -134,7 +135,7 @@ fun LoginScreen(component: LoginComponent) {
 
                 when (success) {
                     null -> {
-                        scope.launch { component.parent.snackbarHost.showSnackbar("there was an error connecting to the server") }
+                        scope.launch { component.parent.snackbarHost.showSnackbar("There was an error connecting to the server") }
                         return@MagisterLoginWebView false
                     }
                     true -> {

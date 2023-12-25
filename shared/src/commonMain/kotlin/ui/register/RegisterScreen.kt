@@ -66,7 +66,8 @@ fun RegisterScreen(component: RegisterComponent) {
             InputTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = "Password"
+                label = "Password",
+                passwordField = true
             )
 
             InputTextField(

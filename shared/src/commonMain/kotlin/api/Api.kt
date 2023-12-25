@@ -16,7 +16,7 @@ val client = HttpClient {
     }
 }
 
-val baseUrl = URLBuilder("http://localhost:8080").appendPathSegments("api")
+val baseUrl = URLBuilder("https://avt.tiebe.dev").appendPathSegments("api")
 
 val accountsUrl = baseUrl.clone().appendPathSegments("accounts")
 val loginUrl = accountsUrl.clone().appendPathSegments("login")
@@ -31,4 +31,5 @@ val verifyUrl = accountsUrl.clone().appendPathSegments("verify")
 
 val infoUrl get() = personUrl.clone().appendPathSegments("info")
 
-val presentUrl = personUrl.clone().appendPathSegments("announce_presence")
+val presentUrl get() = personUrl.clone().appendPathSegments("announce_presence")
+val magisterLinkUrl get() = personUrl.clone().appendPathSegments("magister")

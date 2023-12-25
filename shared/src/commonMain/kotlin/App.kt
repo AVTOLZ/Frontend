@@ -1,6 +1,4 @@
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -9,9 +7,6 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.plus
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scale
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
-import io.ktor.client.*
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import ui.DefaultRootComponent
 import ui.RootComponent
 import ui.login.LoginScreen
 import ui.main.MainScreen
