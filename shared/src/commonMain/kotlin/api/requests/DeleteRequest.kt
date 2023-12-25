@@ -6,9 +6,9 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 
-suspend fun getRequest(url: Url, body: Any? = null): HttpResponse? {
+suspend fun deleteRequest(url: Url, body: Any? = null): HttpResponse? {
     return try {
-        client.get(url) {
+        client.delete(url) {
             contentType(ContentType.Application.Json)
             if (Data.bearerToken != null) bearerAuth(Data.bearerToken.toString())
 
