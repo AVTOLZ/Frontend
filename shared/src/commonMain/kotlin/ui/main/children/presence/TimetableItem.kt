@@ -75,9 +75,9 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
         modifier = modifier
             .clickable(onClick = onClick)
             .topBottomRectBorder(brush = SolidColor(MaterialTheme.colorScheme.outline)),
-        headlineContent = { Text("AVT IS GEWELDIG ") }, // TODO
+        headlineContent = { Text(item.title) },
         supportingContent = {
-            /* TODO: Description here or something */
+            Text(item.description)
         },
         trailingContent = {
             Row {

@@ -110,7 +110,7 @@ class DefaultPresenceComponent(
                 var tableList = readAvailability()
 
                 if (tableList == null) {
-                    parent.parent.snackbarHost.showSnackbar("There was an error retrieving data from the server")
+                    parent.parent.snackbarHost.showSnackbar("There was an error retrieving data from the server","") // this line is fucked
                     tableList = emptyList()
                 }
 
