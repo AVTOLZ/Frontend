@@ -9,6 +9,7 @@ import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.scal
 import com.arkivanov.decompose.extensions.compose.jetbrains.stack.animation.stackAnimation
 import ui.RootComponent
 import ui.login.LoginScreen
+import ui.login.MagisterLoginScreen
 import ui.main.MainScreen
 import ui.onboarding.OnboardingScreen
 import ui.register.RegisterScreen
@@ -23,11 +24,12 @@ fun App(component: RootComponent) {
             animation = stackAnimation(fade() + scale()),
         ) {
             when (val child = it.instance) {
-                is RootComponent.Child.LoginChild -> LoginScreen(child.component)
-                is RootComponent.Child.MainScreen -> MainScreen(child.component)
-                is RootComponent.Child.Verify -> VerificationScreen(child.component)
-                is RootComponent.Child.Register -> RegisterScreen(child.component)
                 is RootComponent.Child.Onboarding -> OnboardingScreen(component)
+                is RootComponent.Child.MainScreen -> MainScreen(child.component)
+                is RootComponent.Child.LoginChild -> LoginScreen(child.component)
+                is RootComponent.Child.MagisterLogin -> MagisterLoginScreen(child.component)
+                is RootComponent.Child.Register -> RegisterScreen(child.component)
+                is RootComponent.Child.Verify -> VerificationScreen(child.component)
             }
         }
     }

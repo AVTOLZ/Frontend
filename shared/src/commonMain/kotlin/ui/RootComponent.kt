@@ -14,6 +14,8 @@ import kotlinx.coroutines.cancel
 import ui.login.LoginComponent
 import kotlinx.serialization.Serializable
 import ui.login.DefaultLoginComponent
+import ui.login.DefaultMagisterLoginComponent
+import ui.login.MagisterLoginComponent
 import ui.main.DefaultMainComponent
 import ui.main.MainComponent
 import ui.main.children.presence.DefaultPresenceComponent
@@ -44,6 +46,8 @@ interface RootComponent {
 
         class Register(val component: RegisterComponent) : Child()
 
+        class MagisterLogin(val component: MagisterLoginComponent) : Child()
+
         data object Onboarding : Child()
     }
 
@@ -60,6 +64,9 @@ interface RootComponent {
 
         @Serializable
         data object Register : Config
+
+        @Serializable
+        data object MagisterLogin : Config
 
         @Serializable
         data object Onboarding : Config
@@ -103,6 +110,7 @@ class DefaultRootComponent(
             is RootComponent.Config.Verify -> RootComponent.Child.Verify(verificationComponent(componentContext))
             is RootComponent.Config.Register -> RootComponent.Child.Register(registerComponent(componentContext))
             is RootComponent.Config.Onboarding -> RootComponent.Child.Onboarding
+            is RootComponent.Config.MagisterLogin -> RootComponent.Child.MagisterLogin(magisterLoginComponent(componentContext))
         }
 
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
@@ -116,6 +124,9 @@ class DefaultRootComponent(
 
     private fun registerComponent(componentContext: ComponentContext): RegisterComponent =
         DefaultRegisterComponent(componentContext, this)
+
+    private fun magisterLoginComponent(componentContext: ComponentContext): MagisterLoginComponent =
+        DefaultMagisterLoginComponent(componentContext, this)
 
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(index = toIndex)
