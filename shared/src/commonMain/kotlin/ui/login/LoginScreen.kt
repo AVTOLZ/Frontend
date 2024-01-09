@@ -28,7 +28,6 @@ fun LoginScreen(component: LoginComponent) {
     val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        var magisterScreenVisible by remember { mutableStateOf(false) }
         var errorMessage by remember { mutableStateOf("") }
 
         Column(
@@ -76,7 +75,7 @@ fun LoginScreen(component: LoginComponent) {
 
                     when (success) {
                         null -> scope.launch { component.parent.snackbarHost.showSnackbar("There was an error logging in.") }
-                        true -> component.parent.navigateTo(RootComponent.Config.Main)
+                        true -> component.parent.clearStack(RootComponent.Config.Main)
                         false -> errorMessage = "Invalid username or password."
                     }
                 },
@@ -89,7 +88,7 @@ fun LoginScreen(component: LoginComponent) {
 
             Button(
                 onClick = {
-                    component.parent.clearStack(RootComponent.Config.Register)
+                    component.parent.navigateTo(RootComponent.Config.Register)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,7 +98,7 @@ fun LoginScreen(component: LoginComponent) {
             }
 
             Button(
-                onClick = { magisterScreenVisible = true },
+                onClick = { component.parent.navigateTo(RootComponent.Config.MagisterLogin) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp),
@@ -113,41 +112,6 @@ fun LoginScreen(component: LoginComponent) {
                     modifier = Modifier.size(48.dp).padding(end = 8.dp)
                 )
                 Text("Login with Magister")
-            }
-        }
-
-        AnimatedVisibility(visible = magisterScreenVisible, modifier = Modifier.fillMaxSize()) {
-            var loginUrl by remember { mutableStateOf(LoginFlow.createAuthURL()) }
-
-            MagisterLoginWebView(getLoginUrl = {
-                loginUrl = LoginFlow.createAuthURL()
-                loginUrl.url
-            }) { url ->
-                val code = getCode(url) ?: return@MagisterLoginWebView false
-
-                // TODO: make this async with loading indicator
-
-                val success = runBlocking {
-                    val tokens = LoginFlow.exchangeTokens(code, loginUrl.codeVerifier)
-
-                    magisterLogin(tokens.refreshToken)
-                }
-
-                when (success) {
-                    null -> {
-                        scope.launch { component.parent.snackbarHost.showSnackbar("There was an error connecting to the server") }
-                        return@MagisterLoginWebView false
-                    }
-                    true -> {
-                        component.parent.navigateTo(RootComponent.Config.Main)
-                    }
-                    false -> {
-                        errorMessage = "Error while signing into Magister, please try again."
-                        magisterScreenVisible = false
-                    }
-                }
-
-                return@MagisterLoginWebView success
             }
         }
     }
