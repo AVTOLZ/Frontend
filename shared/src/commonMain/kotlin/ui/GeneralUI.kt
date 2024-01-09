@@ -17,8 +17,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import dev.avt.app.MR
-import dev.icerock.moko.resources.compose.painterResource
+import icons.AppIcons
+import icons.appicons.Visibility
+import icons.appicons.VisiblityOff
 
 object GeneralUI {
     @Composable
@@ -40,11 +41,11 @@ object GeneralUI {
             trailingIcon = {
                 if (passwordField) {
                     val image = if (passwordVisible)
-                        MR.images.visibility
-                    else MR.images.visiblity_off
+                        AppIcons.Visibility
+                    else AppIcons.VisiblityOff
 
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(painter = painterResource(image), null)
+                        Icon(image, null)
                     }
                 }
             }

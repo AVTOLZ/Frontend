@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import api.accounts.magisterLogin
 import dev.tiebe.magisterapi.api.account.LoginFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import ui.RootComponent
 
 @Composable
@@ -19,26 +18,25 @@ fun MagisterLoginScreen(component: MagisterLoginComponent) {
     }) { url ->
         val code = getCode(url) ?: return@MagisterLoginWebView false
 
-        val success = runBlocking {
+        scope.launch {
             val tokens = LoginFlow.exchangeTokens(code, loginUrl.codeVerifier)
 
-            magisterLogin(tokens.refreshToken)
+            val success = magisterLogin(tokens.refreshToken)
+
+            when (success) {
+                true -> {
+                    component.parent.navigateTo(RootComponent.Config.Main)
+                }
+                false -> {
+                    component.parent.snackbarHost.showSnackbar("Error while signing into Magister, please try again.")
+                }
+                null -> {
+                    component.parent.snackbarHost.showSnackbar("There was an error connecting to the server")
+                }
+            }
+
         }
 
-        when (success) {
-            true -> {
-                component.parent.navigateTo(RootComponent.Config.Main)
-            }
-            false -> {
-                scope.launch { component.parent.snackbarHost.showSnackbar("Error while signing into Magister, please try again.") }
-                return@MagisterLoginWebView false
-            }
-            null -> {
-                scope.launch { component.parent.snackbarHost.showSnackbar("There was an error connecting to the server") }
-                return@MagisterLoginWebView false
-            }
-        }
-
-        return@MagisterLoginWebView success
+        return@MagisterLoginWebView false
     }
 }

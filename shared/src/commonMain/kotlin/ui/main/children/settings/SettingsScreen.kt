@@ -15,26 +15,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import api.accounts.magisterLogin
 import api.person.info.readInfo
 import api.person.magister.linkMagisterAccount
 import dev.tiebe.magisterapi.api.account.LoginFlow
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import ui.RootComponent
-import ui.login.*
-import ui.main.DefaultMainComponent
-import ui.main.MainComponent
+import ui.login.MagisterLoginWebView
+import ui.login.getCode
 
 @Composable
 fun SettingsScreen(component: SettingsComponent) {
 
     val scope = rememberCoroutineScope()
 
-    val res = runBlocking { readInfo() }
-
-    if (res == null) {
-        scope.launch { component.parent.snackbarHost.showSnackbar("There was an error retrieving user data.") }
+    val res = scope.launch {
+        if (readInfo() == null) {
+            component.parent.snackbarHost.showSnackbar("There was an error retrieving user data.")
+        }
     }
 
     var magisterScreenVisible by remember { mutableStateOf(false) }
@@ -112,24 +110,24 @@ fun SettingsScreen(component: SettingsComponent) {
 
             // TODO: make this async with loading indicator
 
-            val success = runBlocking {
+            MainScope().launch {
                 val tokens = LoginFlow.exchangeTokens(code, loginUrl.codeVerifier)
 
-                linkMagisterAccount(tokens.refreshToken)
+                val success = linkMagisterAccount(tokens.refreshToken)
+
+                when (success) {
+                    true -> {
+                        scope.launch { component.parent.snackbarHost.showSnackbar("Successfully linked your Magister account.") }
+                        magisterScreenVisible = false
+                    }
+                    false -> {
+                        errorMessage = "Error while signing into Magister, please try again."
+                        magisterScreenVisible = false
+                    }
+                }
             }
 
-            when (success) {
-                true -> {
-                    scope.launch { component.parent.snackbarHost.showSnackbar("Successfully linked your Magister account.") }
-                    magisterScreenVisible = false
-                }
-                false -> {
-                    errorMessage = "Error while signing into Magister, please try again."
-                    magisterScreenVisible = false
-                }
-            }
-
-            return@MagisterLoginWebView success
+            return@MagisterLoginWebView false
         }
     }
 }

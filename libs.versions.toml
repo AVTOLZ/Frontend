@@ -7,9 +7,9 @@ android_sdk-compile = "33"
 
 ios_target = "11.0"
 
-magister = "1.1.10-alpha03"
+magister = "1.1.15"
 
-kotlin = "1.9.10"
+kotlin = "1.9.20"
 gradle = "7.4.2"
 appcompat = "1.6.1"
 material = "1.10.0"
@@ -20,7 +20,6 @@ compose-activity = "1.8.0"
 material3 = "1.1.2"
 ktor = "2.3.4"
 decompose = "2.2.0-compose-experimental-alpha02"
-moko = "0.23.0"
 buildkonfig = "0.13.3"
 gms = "4.4.0"
 firebase = "32.4.0"
@@ -60,11 +59,8 @@ ktor-client-logging_jvm = { group = "io.ktor", name = "ktor-client-logging-jvm",
 ktor-client-json_jvm = { group = "io.ktor", name = "ktor-client-json-jvm", version.ref = "ktor" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-jvm = { group = "io.ktor", name = "ktor-client-apache5", version.ref = "ktor" }
+ktor-client-js = { group = "io.ktor", name = "ktor-client-js", version.ref = "ktor" }
 ktor-client-ios = { group = "io.ktor", name = "ktor-client-ios", version.ref = "ktor" }
-
-moko-gradle = { group = "dev.icerock.moko", name = "resources-generator", version.ref = "moko" }
-moko-resources-core = { group = "dev.icerock.moko", name = "resources", version.ref = "moko" }
-moko-resources-compose = { group = "dev.icerock.moko", name = "resources-compose", version.ref = "moko" }
 
 buildkonfig-gradle = { group = "com.codingfeline.buildkonfig", name = "buildkonfig-gradle-plugin", version.ref = "buildkonfig" }
 
@@ -89,7 +85,6 @@ guava-core = { group = "com.google.guava", name = "guava", version.ref = "guava"
 guava-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-guava", version.ref = "guava-coroutines" }
 
 [plugins]
-mokoresources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko" }
 
 complete_kotlin = { id = "com.louiscad.complete-kotlin", version.ref = "complete-kotlin" }
 

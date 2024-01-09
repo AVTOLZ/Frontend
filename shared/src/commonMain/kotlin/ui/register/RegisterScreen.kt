@@ -11,8 +11,8 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import api.accounts.register
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import ui.GeneralUI.InputTextField
 import ui.RootComponent
 
@@ -85,21 +85,23 @@ fun RegisterScreen(component: RegisterComponent) {
             Button(
                 onClick = {
 
-                    val success = runBlocking {
-                        register(username, password, email, firstName, lastName)
+                    MainScope().launch {
+                        val success = register(username, password, email, firstName, lastName)
+
+                        if (success == null) {
+                            errorString = "This username or email is already in use."
+                        }
+
+                        if (success == true) {
+                            component.parent.clearStack(RootComponent.Config.Verify)
+                        }
+
+                        if (success == false) {
+                            scope.launch { component.parent.snackbarHost.showSnackbar("There was a connection error with the server, please try again later") }
+                        }
                     }
 
-                    if (success == null) {
-                        errorString = "This username or email is already in use."
-                    }
 
-                    if (success == true) {
-                        component.parent.clearStack(RootComponent.Config.Verify)
-                    }
-
-                    if (success == false) {
-                        scope.launch { component.parent.snackbarHost.showSnackbar("There was a connection error with the server, please try again later") }
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

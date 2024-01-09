@@ -1,7 +1,6 @@
 package ui.main
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
@@ -12,9 +11,9 @@ import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
-import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import ui.RootComponent
 import ui.main.children.presence.DefaultPresenceComponent
@@ -81,7 +80,7 @@ class DefaultMainComponent(
     }
 
     init {
-        runBlocking {
+        MainScope().launch {
             readInfo()
         }
     }

@@ -1,10 +1,7 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
-    id("dev.icerock.mobile.multiplatform-resources")
     kotlin("plugin.serialization") version "1.9.0"
 }
 
@@ -22,6 +19,10 @@ kotlin {
     androidTarget()
 
     jvm("desktop")
+
+    js(IR) {
+        browser()
+    }
 
     listOf(
         iosX64(),
@@ -51,9 +52,6 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
 
-                api(libs.moko.resources.core)
-                api(libs.moko.resources.compose)
-
                 implementation(libs.multiplatform.settings)
                 implementation(libs.decompose.core)
                 implementation(libs.decompose.compose)
@@ -73,7 +71,7 @@ kotlin {
                 implementation(libs.ktor.client.json.jvm)
                 implementation(libs.ktor.client.android)
 
-                api("androidx.activity:activity-compose:1.8.0")
+                api("androidx.activity:activity-compose:1.8.2")
                 api("androidx.appcompat:appcompat:1.6.1")
                 api("androidx.core:core-ktx:1.12.0")
             }
@@ -107,6 +105,13 @@ kotlin {
                 implementation("org.openjfx:javafx-swing:$jdkVersion:${platform}")
             }
         }
+        val jsMain by getting {
+            dependencies {
+                dependsOn(commonMain)
+
+                implementation(libs.ktor.client.js)
+            }
+        }
     }
 }
 
@@ -128,8 +133,4 @@ android {
     kotlin {
         jvmToolchain(17)
     }
-}
-
-multiplatformResources {
-    multiplatformResourcesPackage = "dev.avt.app" // required
 }

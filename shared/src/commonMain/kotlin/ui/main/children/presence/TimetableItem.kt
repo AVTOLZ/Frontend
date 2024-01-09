@@ -23,7 +23,6 @@ import api.person.absence.requestHours.requestHours
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import io.ktor.http.*
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.datetime.*
 import kotlin.time.DurationUnit
 
@@ -66,6 +65,8 @@ internal fun TimetableItems(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) -> Unit, onClick: () -> Unit) {
+    val scope = rememberCoroutineScope()
+
     val supportingText = mutableListOf<String>("prachtige description")
 
     var checkedPresent by remember { mutableStateOf( item.presentType == PresenceType.PRESENT) }
@@ -88,20 +89,20 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
 
                         checkedPresent = it
 
-                        runBlocking {
+                        scope.launch {
                             val res = announcePresence(item.id, !it)
 
                             if (res == HttpStatusCode.Conflict) {
                                 onError("The absence request has been approved \n" +
                                         "to remove contact administrator")
                                 checkedPresent = !it
-                                return@runBlocking
+                                return@launch
                             }
 
                             if (res != HttpStatusCode.OK) {
                                 onError("There was an error communicating with the server")
                                 checkedPresent = !it
-                                return@runBlocking
+                                return@launch
                             }
                         }
 
@@ -118,20 +119,20 @@ fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) 
 
                         checkedAbsence = it
 
-                        runBlocking {
+                        scope.launch {
                             val res = requestHours(item.id, !it)
 
                             if (res == HttpStatusCode.Conflict) {
                                 onError("The absence request has been approved \n" +
                                         "to remove contact administrator")
                                 checkedAbsence = !it
-                                return@runBlocking
+                                return@launch
                             }
 
                             if (res != HttpStatusCode.OK) {
                                 onError("There was an error communicating with the server.")
                                 checkedAbsence = !it
-                                return@runBlocking
+                                return@launch
                             }
                         }
 
