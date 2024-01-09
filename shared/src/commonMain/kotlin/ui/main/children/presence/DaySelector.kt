@@ -85,6 +85,7 @@ internal fun DaySelector(
                 }
 
                 if (currentPlatform == Platform.JVM) {
+                    // TODO fix this
                     Button(
                         onClick = { scope.launch { dayPagerState.scrollToPage(dayPagerState.currentPage + 7) } },
                         modifier = Modifier
