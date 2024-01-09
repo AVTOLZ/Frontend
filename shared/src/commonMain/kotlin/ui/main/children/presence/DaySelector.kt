@@ -9,6 +9,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
@@ -53,8 +55,8 @@ internal fun DaySelector(
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Home,
-                    contentDescription = "Today",
+                    imageVector = Icons.Filled.KeyboardArrowLeft,
+                    contentDescription = "Left",
                     tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
@@ -96,8 +98,8 @@ internal fun DaySelector(
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Home,
-                            contentDescription = "Today",
+                            imageVector = Icons.Filled.KeyboardArrowRight,
+                            contentDescription = "Right",
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
