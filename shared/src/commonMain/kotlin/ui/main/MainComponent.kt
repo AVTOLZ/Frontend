@@ -1,10 +1,6 @@
 package ui.main
 
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.Composable
 import api.person.info.readInfo
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
@@ -21,7 +17,6 @@ import ui.main.children.presence.DefaultPresenceComponent
 import ui.main.children.presence.PresenceComponent
 import ui.main.children.settings.DefaultSettingsComponent
 import ui.main.children.settings.SettingsComponent
-import ui.main.icons.CalendarTodayIcon
 
 interface MenuItemComponent {
     val parent: MainComponent
@@ -34,17 +29,13 @@ interface MainComponent {
 
     fun navigateTo(config: Config)
 
-    @Serializable // kotlinx-serialization plugin must be applied
-    sealed class Config(val text: String, val icon: @Composable () -> Unit) {
+    @Serializable
+    sealed class Config(val text: String) {
         @Serializable
-        data object Presence : Config("Presence", {
-            Icon(CalendarTodayIcon, "Presence")
-        })
+        data object Presence : Config("Presence")
 
         @Serializable
-        data object Settings : Config("Settings", {
-            Icon(Icons.Default.Settings, "Settings")
-        })
+        data object Settings : Config("Settings")
     }
 
 

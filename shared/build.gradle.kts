@@ -107,11 +107,12 @@ kotlin {
         }
         val jsMain by getting {
             dependencies {
-                dependsOn(commonMain)
+                api(compose.html.core)
 
                 implementation(libs.ktor.client.js)
             }
         }
+
     }
 }
 
