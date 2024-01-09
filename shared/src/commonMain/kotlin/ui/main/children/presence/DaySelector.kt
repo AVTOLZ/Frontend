@@ -1,10 +1,16 @@
 package ui.main.children.presence
 
+import Platform
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material3.*
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.Composable
@@ -21,6 +27,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.lerp
 import androidx.compose.ui.unit.sp
+import currentPlatform
 import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import kotlin.math.floor
@@ -31,28 +38,72 @@ internal fun DaySelector(
     dayPagerState: PagerState,
     weekPagerState: PagerState,
 ) {
-    HorizontalPager(state = weekPagerState) { week ->
-        TabRow(
-            selectedTabIndex = (dayPagerState.currentPage - dayPagerState.pageCount) % days.size,
-            indicator = { tabPositions ->
-                TabRowDefaults.Indicator(
-                    Modifier.tabIndicatorOffset(
-                        dayPagerState,
-                        tabPositions,
-                        shouldShowIndicator = week == floor(dayPagerState.currentPage / days.size.toDouble()).toInt()
-                    )
-                )
-            }) {
+    val scope = rememberCoroutineScope()
 
-            days.forEachIndexed { dayIndex, title ->
-                val index = dayIndex + (week * days.size)
-                DayTabItem(
-                    index == dayPagerState.currentPage &&
-                            week == floor(dayPagerState.currentPage / days.size.toDouble()).toInt(),
-                    index,
-                    dayPagerState,
-                    title
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly
+    ) {
+        if (currentPlatform == Platform.JVM) {
+            Button(
+                onClick = { scope.launch { dayPagerState.scrollToPage(dayPagerState.currentPage - 7) } },
+                modifier = Modifier
+                    .size(60.dp)
+                    .padding(10.dp),
+                shape = CircleShape,
+                contentPadding = PaddingValues(0.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.KeyboardArrowLeft,
+                    contentDescription = "Left",
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
+            }
+        }
+
+        HorizontalPager(state = weekPagerState) { week ->
+            TabRow(
+                selectedTabIndex = (dayPagerState.currentPage - dayPagerState.pageCount) % days.size,
+                indicator = { tabPositions ->
+                    TabRowDefaults.Indicator(
+                        Modifier.tabIndicatorOffset(
+                            dayPagerState,
+                            tabPositions,
+                            shouldShowIndicator = week == floor(dayPagerState.currentPage / days.size.toDouble()).toInt()
+                        )
+                    )
+                }) {
+
+                days.forEachIndexed { dayIndex, title ->
+                    val index = dayIndex + (week * days.size)
+                    DayTabItem(
+                        index == dayPagerState.currentPage &&
+                                week == floor(dayPagerState.currentPage / days.size.toDouble()).toInt(),
+                        index,
+                        dayPagerState,
+                        title
+                    )
+                }
+
+                if (currentPlatform == Platform.JVM) {
+                    // TODO fix this
+                    Button(
+                        onClick = { scope.launch { dayPagerState.scrollToPage(dayPagerState.currentPage + 7) } },
+                        modifier = Modifier
+                            .size(60.dp)
+                            .padding(10.dp),
+                        shape = CircleShape,
+                        contentPadding = PaddingValues(0.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.KeyboardArrowRight,
+                            contentDescription = "Right",
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                }
             }
         }
     }
