@@ -16,7 +16,7 @@ val client = HttpClient {
     }
 }
 
-val baseUrl = URLBuilder("https://avt.tiebe.dev:8080").appendPathSegments("api")
+val baseUrl = URLBuilder("https://avt.tiebe.dev").appendPathSegments("api")
 
 val accountsUrl = baseUrl.clone().appendPathSegments("accounts")
 val loginUrl = accountsUrl.clone().appendPathSegments("login")
