@@ -1,7 +1,6 @@
 package icons
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import icons.appicons.Icon
 import icons.appicons.Magister
 import icons.appicons.Visibility
 import icons.appicons.VisiblityOff
@@ -16,6 +15,6 @@ public val AppIcons.AllAssets: ____KtList<ImageVector>
     if (__AllAssets != null) {
       return __AllAssets!!
     }
-    __AllAssets= listOf(Icon, Magister, Visibility, VisiblityOff)
+    __AllAssets= listOf(Magister, Visibility, VisiblityOff)
     return __AllAssets!!
   }

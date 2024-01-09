@@ -1,5 +1,5 @@
 enum class Platform {
-    Apple, Android, JVM
+    Apple, Android, JVM, JS
 }
 
 expect val currentPlatform: Platform

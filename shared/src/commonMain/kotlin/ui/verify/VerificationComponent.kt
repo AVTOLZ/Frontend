@@ -3,7 +3,7 @@ package ui.verify
 import Data
 import api.accounts.verifyAccount
 import com.arkivanov.decompose.ComponentContext
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ui.RootComponent
 
@@ -21,7 +21,8 @@ class DefaultVerificationComponent(
     override fun verify(code: String) {
         // TODO make this async as well with loading indicator
 
-        MainScope().launch {
+
+        GlobalScope.launch {
             val success = verifyAccount(Data.personId, code.toIntOrNull() ?: return@launch);
 
             if (success != true) {

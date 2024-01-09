@@ -1,17 +1,17 @@
 package ui.register
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import api.accounts.register
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ui.GeneralUI.InputTextField
 import ui.RootComponent
@@ -85,7 +85,7 @@ fun RegisterScreen(component: RegisterComponent) {
             Button(
                 onClick = {
 
-                    MainScope().launch {
+                    GlobalScope.launch {
                         val success = register(username, password, email, firstName, lastName)
 
                         if (success == null) {

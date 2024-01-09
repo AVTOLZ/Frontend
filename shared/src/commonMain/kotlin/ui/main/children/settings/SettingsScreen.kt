@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.sp
 import api.person.info.readInfo
 import api.person.magister.linkMagisterAccount
 import dev.tiebe.magisterapi.api.account.LoginFlow
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ui.RootComponent
 import ui.login.MagisterLoginWebView
@@ -110,7 +110,7 @@ fun SettingsScreen(component: SettingsComponent) {
 
             // TODO: make this async with loading indicator
 
-            MainScope().launch {
+            GlobalScope.launch {
                 val tokens = LoginFlow.exchangeTokens(code, loginUrl.codeVerifier)
 
                 val success = linkMagisterAccount(tokens.refreshToken)

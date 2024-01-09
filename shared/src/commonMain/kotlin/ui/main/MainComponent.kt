@@ -12,7 +12,8 @@ import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.value.Value
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import ui.RootComponent
@@ -50,6 +51,7 @@ interface MainComponent {
     val dialog: Value<ChildSlot<Config, MenuItemComponent>>
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 class DefaultMainComponent(
     componentContext: ComponentContext, override val parent: RootComponent,
 ) : MainComponent, ComponentContext by componentContext {
@@ -80,7 +82,7 @@ class DefaultMainComponent(
     }
 
     init {
-        MainScope().launch {
+        GlobalScope.launch {
             readInfo()
         }
     }
