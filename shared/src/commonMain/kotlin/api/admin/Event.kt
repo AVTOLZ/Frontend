@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Event(
+    val id: Int,
     val requiredRank: AVTRanks,
     var startTime: Long,
     var endTime: Long,
