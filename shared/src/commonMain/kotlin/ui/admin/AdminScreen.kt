@@ -1,30 +1,25 @@
 package ui.main
 
-import Data
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import api.person.info.AVTRanks
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import ui.RootComponent
+import ui.admin.AdminComponent
+import ui.admin.children.members.*
 import ui.main.children.presence.DefaultPresenceComponent
 import ui.main.children.presence.PresenceScreen
 import ui.main.children.settings.DefaultSettingsComponent
-import ui.main.children.settings.SettingsScreen
 
 @Composable
-fun MainScreen(component: MainComponent) {
+fun AdminScreen(component: AdminComponent) {
     val dialog = component.dialog.subscribeAsState()
     val overlay = dialog.value.child ?: return
 
     val items = listOf(
-        MainComponent.Config.Presence,
-        MainComponent.Config.Settings
+        AdminComponent.Config.Members
     )
 
     Scaffold(
@@ -40,24 +35,12 @@ fun MainScreen(component: MainComponent) {
                         }
                     )
                 }
-
-                if (Data.userRank >= AVTRanks.Hoofd.order) {
-                    NavigationBarItem(
-                        icon = { Icon(Icons.Default.Person, null) },
-                        label = { Text("Settings") },
-                        selected = overlay.configuration == MainComponent.Config.Settings,
-                        onClick = {
-                            component.parent.navigateTo(RootComponent.Config.Admin)
-                        }
-                    )
-                }
             }
         }
     ) { innerPadding ->
         Box(Modifier.fillMaxSize().padding(innerPadding)) {
             when (val dialogComponent = overlay.instance) {
-                is DefaultPresenceComponent -> PresenceScreen(dialogComponent)
-                is DefaultSettingsComponent -> SettingsScreen(dialogComponent)
+                is MembersComponent -> MembersScreen(dialogComponent)
                 else -> {}
             }
         }

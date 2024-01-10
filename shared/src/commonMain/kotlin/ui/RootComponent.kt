@@ -12,6 +12,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import ui.login.LoginComponent
 import kotlinx.serialization.Serializable
+import ui.admin.AdminComponent
+import ui.admin.DefaultAdminComponent
 import ui.login.DefaultLoginComponent
 import ui.main.DefaultMainComponent
 import ui.main.MainComponent
@@ -41,6 +43,8 @@ interface RootComponent {
 
         class Register(val component: RegisterComponent) : Child()
 
+        class Admin(val component: AdminComponent) : Child()
+
         data object Onboarding : Child()
     }
 
@@ -57,6 +61,9 @@ interface RootComponent {
 
         @Serializable
         data object Register : Config
+
+        @Serializable
+        data object Admin : Config
 
         @Serializable
         data object Onboarding : Config
@@ -99,6 +106,7 @@ class DefaultRootComponent(
             is RootComponent.Config.Main -> RootComponent.Child.MainScreen(mainComponent(componentContext))
             is RootComponent.Config.Verify -> RootComponent.Child.Verify(verificationComponent(componentContext))
             is RootComponent.Config.Register -> RootComponent.Child.Register(registerComponent(componentContext))
+            is RootComponent.Config.Admin -> RootComponent.Child.Admin(adminComponent(componentContext))
             is RootComponent.Config.Onboarding -> RootComponent.Child.Onboarding
         }
 
@@ -113,6 +121,9 @@ class DefaultRootComponent(
 
     private fun registerComponent(componentContext: ComponentContext): RegisterComponent =
         DefaultRegisterComponent(componentContext, this)
+
+    private fun adminComponent(componentContext: ComponentContext): AdminComponent =
+        DefaultAdminComponent(componentContext, this)
 
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(index = toIndex)

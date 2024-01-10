@@ -14,6 +14,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import ui.DefaultRootComponent
 import ui.RootComponent
 import ui.login.LoginScreen
+import ui.main.AdminScreen
 import ui.main.MainScreen
 import ui.onboarding.OnboardingScreen
 import ui.register.RegisterScreen
@@ -32,6 +33,7 @@ fun App(component: RootComponent) {
                 is RootComponent.Child.MainScreen -> MainScreen(child.component)
                 is RootComponent.Child.Verify -> VerificationScreen(child.component)
                 is RootComponent.Child.Register -> RegisterScreen(child.component)
+                is RootComponent.Child.Admin -> AdminScreen(child.component)
                 is RootComponent.Child.Onboarding -> OnboardingScreen(component)
             }
         }

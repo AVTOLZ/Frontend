@@ -1,4 +1,4 @@
-package ui.main.children.settings
+package ui.admin.children.members
 
 import Data
 import androidx.compose.foundation.layout.*
@@ -14,9 +14,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import ui.RootComponent
+import ui.main.children.settings.SettingsComponent
 
 @Composable
-fun SettingsScreen(component: SettingsComponent) {
+fun MembersScreen(component: MembersComponent) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -30,10 +31,10 @@ fun SettingsScreen(component: SettingsComponent) {
             shape = RoundedCornerShape(8.dp)
         ){
             Column(modifier = Modifier.padding(16.dp)) {
-                ui.admin.children.members.CustomText(title = "Username", value = Data.username ?: "")
-                ui.admin.children.members.CustomText(title = "Voornaam", value = Data.userFirstname ?: "")
-                ui.admin.children.members.CustomText(title = "Achternaam", value = Data.userLastname ?: "")
-                ui.admin.children.members.CustomText(title = "Rang", value = Data.userRankString ?: "")
+                CustomText(title = "Username", value = Data.username ?: "")
+                CustomText(title = "Voornaam", value = Data.userFirstname ?: "")
+                CustomText(title = "Achternaam", value = Data.userLastname ?: "")
+                CustomText(title = "Rang", value = Data.userRankString ?: "")
             }
         }
 
