@@ -53,10 +53,10 @@ fun MainScreen(component: MainComponent) {
                 if (Data.userRank >= AVTRanks.Hoofd.order) {
                     NavigationBarItem(
                         icon = { Icon(Icons.Default.Person, null) },
-                        label = { Text("Settings") },
-                        selected = overlay.configuration == MainComponent.Config.Settings,
+                        label = { Text("Admin") },
+                        selected = false,
                         onClick = {
-                            component.parent.navigateTo(RootComponent.Config.Admin)
+                            component.parent.clearStack(RootComponent.Config.Admin)
                         }
                     )
                 }

@@ -1,21 +1,16 @@
 package ui.admin
 
 import androidx.compose.runtime.Composable
-import api.person.info.readInfo
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.slot.ChildSlot
 import com.arkivanov.decompose.router.slot.SlotNavigation
 import com.arkivanov.decompose.router.slot.activate
 import com.arkivanov.decompose.router.slot.childSlot
 import com.arkivanov.decompose.value.Value
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import ui.RootComponent
 import ui.admin.children.members.DefaultMembersComponent
 import ui.admin.children.members.MembersComponent
-import ui.main.MainComponent
-import ui.main.MenuItemComponent
-import ui.main.children.presence.DefaultPresenceComponent
 
 interface AdminItemComponent {
     val parent: AdminComponent
@@ -59,11 +54,5 @@ class DefaultAdminComponent(
 
     override fun navigateTo(config: AdminComponent.Config) {
         dialogNavigation.activate(config)
-    }
-
-    init {
-        runBlocking {
-            readInfo()
-        }
     }
 }

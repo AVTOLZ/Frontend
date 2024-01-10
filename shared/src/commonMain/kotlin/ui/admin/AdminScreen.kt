@@ -3,15 +3,16 @@ package ui.main
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import ui.RootComponent
 import ui.admin.AdminComponent
-import ui.admin.children.members.*
-import ui.main.children.presence.DefaultPresenceComponent
-import ui.main.children.presence.PresenceScreen
-import ui.main.children.settings.DefaultSettingsComponent
+import ui.admin.children.members.MembersComponent
+import ui.admin.children.members.MembersScreen
 
 @Composable
 fun AdminScreen(component: AdminComponent) {
@@ -35,6 +36,15 @@ fun AdminScreen(component: AdminComponent) {
                         }
                     )
                 }
+
+                NavigationBarItem(
+                    icon = { Icon(Icons.Default.ArrowBack, "") },
+                    label = { Text("Back") },
+                    selected = false,
+                    onClick = {
+                        component.parent.clearStack(RootComponent.Config.Main)
+                    }
+                )
             }
         }
     ) { innerPadding ->
