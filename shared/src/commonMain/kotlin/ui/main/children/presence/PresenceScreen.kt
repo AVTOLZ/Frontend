@@ -26,7 +26,7 @@ import kotlinx.datetime.*
 @Composable
 fun PresenceScreen(component: PresenceComponent) {
     var currentTime = remember {
-        Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     }
 
     val dayPagerState = rememberPagerState(350 + currentTime.dayOfWeek.ordinal) { 700 }
@@ -34,7 +34,7 @@ fun PresenceScreen(component: PresenceComponent) {
 
     LaunchedEffect(Unit) {
         while (true) {
-            currentTime = Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+            currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
             delay(10000)
         }
     }
@@ -95,7 +95,7 @@ fun TodayButton(dayPagerState: PagerState, currentDayOfWeek: Int) {
 }
 
 @OptIn(ExperimentalFoundationApi::class)
-fun getStartOfWeekFromDay(page: Int, initialPage: Int, now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))): LocalDate {
+fun getStartOfWeekFromDay(page: Int, initialPage: Int, now: LocalDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())): LocalDate {
     val initialPageDate = now.date.minus(now.dayOfWeek.ordinal, DateTimeUnit.DAY)
 
     return initialPageDate.plus(7*(page.floorDiv(7) - initialPage.floorDiv(7)), DateTimeUnit.DAY)

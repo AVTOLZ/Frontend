@@ -127,7 +127,7 @@ fun SettingsScreen(component: SettingsComponent) {
                 }
             }
 
-            return@MagisterLoginWebView false
+            return@MagisterLoginWebView true
         }
     }
 }

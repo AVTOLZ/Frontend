@@ -82,7 +82,7 @@ interface PresenceComponent: MenuItemComponent {
 class DefaultPresenceComponent(
     componentContext: ComponentContext, override val parent: MainComponent,
 ) : PresenceComponent, ComponentContext by componentContext {
-    override val now: MutableValue<LocalDateTime> = MutableValue(Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam")))
+    override val now: MutableValue<LocalDateTime> = MutableValue(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
     override val currentPage = MutableValue(500 + now.value.date.dayOfWeek.ordinal)
 
     override val timetable: MutableValue<List<AvailabilityItem>> = MutableValue(emptyList())
@@ -151,7 +151,7 @@ class DefaultPresenceComponent(
 
         scope.launch {
             while (true) {
-                now.value = Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+                now.value = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
                 delay(60_000)
             }
@@ -166,5 +166,5 @@ fun List<AvailabilityItem>.getAgendaForDay(day: Int): List<AvailabilityItem> {
     }
 }
 
-val AvailabilityItem.startDateTime get() = Instant.fromEpochSeconds(startTime).toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
-val AvailabilityItem.endDateTime get() = Instant.fromEpochSeconds(endTime).toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+val AvailabilityItem.startDateTime get() = Instant.fromEpochSeconds(startTime).toLocalDateTime(TimeZone.currentSystemDefault())
+val AvailabilityItem.endDateTime get() = Instant.fromEpochSeconds(endTime).toLocalDateTime(TimeZone.currentSystemDefault())
