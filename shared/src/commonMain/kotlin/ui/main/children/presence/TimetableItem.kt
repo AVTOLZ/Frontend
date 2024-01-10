@@ -38,13 +38,13 @@ internal fun TimetableItems(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val now = remember { Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam")) }
+        val now = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()) }
 
         val startOfWeekDate = getStartOfWeekFromDay(page, 350, now)
         val selectedDayDate = startOfWeekDate.plus(page % 7, DateTimeUnit.DAY)
 
         // Get the time as Instant of the top of the timetable
-        val timeTop = selectedDayDate.atStartOfDayIn(TimeZone.of("Europe/Amsterdam")).plus(timesShown.first(), DateTimeUnit.HOUR)
+        val timeTop = selectedDayDate.atStartOfDayIn(TimeZone.currentSystemDefault()).plus(timesShown.first(), DateTimeUnit.HOUR)
 
         val timetable = component.timetable.subscribeAsState()
         val scope = rememberCoroutineScope()

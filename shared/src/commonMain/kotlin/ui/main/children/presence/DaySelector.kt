@@ -118,7 +118,7 @@ fun DayTabItem(
 ) {
     val scope = rememberCoroutineScope()
     val currentDate = remember {
-        Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     }
 
     val firstDayOfWeek = remember {
@@ -157,7 +157,7 @@ fun DayTabItem(
 @Composable
 fun DaySelectorPreview() {
     val currentDate = remember {
-        Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+        Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
     }
 
     DaySelector(
