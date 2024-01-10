@@ -1,4 +1,4 @@
-package ui.admin.children.events
+package ui.admin.children.hours
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,17 +15,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import api.admin.Event
+import api.admin.RequestedHour
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import icons.AppIcons
 import icons.appicons.Printer
+import kotlinx.coroutines.launch
 
 @Composable
-fun EventsScreen(component: EventsComponent) {
+fun HoursScreen(component: HoursComponent) {
     Box(Modifier.fillMaxSize()) {
-        val events = component.events.subscribeAsState().value
+        val hours = component.hours.subscribeAsState().value
 
-        var checked by remember { mutableStateOf(listOf<Event>()) }
+        var checked by remember { mutableStateOf(listOf<RequestedHour>()) }
 
         // The LazyColumn will be our table. Notice the use of the weights below
         LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
@@ -33,17 +34,17 @@ fun EventsScreen(component: EventsComponent) {
             item {
                 Row(Modifier.background(Color.Gray), verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = checked.isNotEmpty(), onCheckedChange = {
-                        checked = if (it) events
+                        checked = if (it) hours
                         else emptyList()
                     }, modifier = Modifier.size(20.dp))
 
                     TableCell(weight = .1f) {}
-                    TableCell(weight = .3f) { Text("Name") }
-                    TableCell(weight = .5f) { Text("Description") }
+                    TableCell(weight = .3f) { Text("User") }
+                    TableCell(weight = .5f) { Text("Hour") }
                 }
             }
             // Here are all the lines of your table.
-            items(events) { event ->
+            items(hours) { event ->
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Checkbox(checked = checked.contains(event), onCheckedChange = {
                         checked = if (it) checked + event
@@ -52,15 +53,17 @@ fun EventsScreen(component: EventsComponent) {
 
                     Spacer(Modifier.size(3.dp))
 
-                    TableCell(weight = .3f) { Text(event.title) }
-                    TableCell(weight = .5f) { Text(event.description) }
+                    TableCell(weight = .3f) { Text(event.userId.toString()) }
+                    TableCell(weight = .5f) { Text(event.hourId.toString()) }
                 }
             }
         }
 
+        val scope = rememberCoroutineScope()
+
         ExtendedFloatingActionButton(
             modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp),
-            onClick = {},
+            onClick = { scope.launch { component.print(checked) } },
             icon = {
                 Icon(AppIcons.Printer, "Print")
             }, text = {

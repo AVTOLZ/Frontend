@@ -6,8 +6,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +16,8 @@ import ui.RootComponent
 import ui.admin.AdminComponent
 import ui.admin.children.events.EventsComponent
 import ui.admin.children.events.EventsScreen
+import ui.admin.children.hours.HoursComponent
+import ui.admin.children.hours.HoursScreen
 import ui.admin.children.members.MembersComponent
 import ui.admin.children.members.MembersScreen
 
@@ -26,7 +28,8 @@ fun AdminScreen(component: AdminComponent) {
 
     val items = listOf(
         AdminComponent.Config.Members,
-        AdminComponent.Config.Events
+        AdminComponent.Config.Events,
+        AdminComponent.Config.Hours
     )
 
     Scaffold(
@@ -36,7 +39,7 @@ fun AdminScreen(component: AdminComponent) {
                     val icon = when (screen) {
                         is AdminComponent.Config.Members -> { Icons.Default.Person }
                         is AdminComponent.Config.Events -> { Icons.Default.Add }
-                        else -> { Icons.Default.Settings }
+                        is AdminComponent.Config.Hours -> { Icons.Default.Check }
                     }
 
                     NavigationBarItem(
@@ -64,6 +67,7 @@ fun AdminScreen(component: AdminComponent) {
             when (val dialogComponent = overlay.instance) {
                 is MembersComponent -> MembersScreen(dialogComponent)
                 is EventsComponent -> EventsScreen(dialogComponent)
+                is HoursComponent -> HoursScreen(dialogComponent)
                 else -> {}
             }
         }

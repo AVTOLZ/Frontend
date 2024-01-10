@@ -10,6 +10,8 @@ import kotlinx.serialization.Serializable
 import ui.RootComponent
 import ui.admin.children.events.DefaultEventsComponent
 import ui.admin.children.events.EventsComponent
+import ui.admin.children.hours.DefaultHoursComponent
+import ui.admin.children.hours.HoursComponent
 import ui.admin.children.members.DefaultMembersComponent
 import ui.admin.children.members.MembersComponent
 
@@ -29,6 +31,9 @@ interface AdminComponent {
 
         @Serializable
         data object Events : Config("Events")
+
+        @Serializable
+        data object Hours : Config("Hours")
     }
 
 
@@ -49,6 +54,7 @@ class DefaultAdminComponent(
         when (config) {
             is AdminComponent.Config.Members -> membersComponent(componentContext)
             is AdminComponent.Config.Events -> eventsComponent(componentContext)
+            is AdminComponent.Config.Hours -> hoursComponent(componentContext)
         }
     }
 
@@ -57,6 +63,9 @@ class DefaultAdminComponent(
 
     private fun eventsComponent(componentContext: ComponentContext): EventsComponent =
         DefaultEventsComponent(componentContext, this)
+
+    private fun hoursComponent(componentContext: ComponentContext): HoursComponent =
+        DefaultHoursComponent(componentContext, this)
 
 
     override fun navigateTo(config: AdminComponent.Config) {
