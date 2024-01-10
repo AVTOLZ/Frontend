@@ -16,7 +16,6 @@ permissions:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -26,6 +25,7 @@ jobs:
       with:
         java-version: '19'
         distribution: 'temurin'
+    - uses: actions/cache@v3.3.2
     - name: Build with Gradle
       uses: gradle/gradle-build-action@bd5760595778326ba7f1441bcf7e88b49de61a25 # v2.6.0
       with:
