@@ -17,11 +17,12 @@ import androidx.compose.ui.platform.debugInspectorInfo
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import api.person.absence.availability.AvailabilityItem
-import api.person.absence.availability.HourStatus
-import api.person.absence.requestHours.HourRequestType
+import api.person.absence.availability.PresenceType
+import api.person.absence.present.announcePresence
 import api.person.absence.requestHours.requestHours
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import kotlinx.coroutines.runBlocking
+import io.ktor.http.*
+import kotlinx.coroutines.launch
 import kotlinx.datetime.*
 import kotlin.time.DurationUnit
 
@@ -37,15 +38,16 @@ internal fun TimetableItems(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        val now = remember { Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam")) }
+        val now = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()) }
 
         val startOfWeekDate = getStartOfWeekFromDay(page, 350, now)
         val selectedDayDate = startOfWeekDate.plus(page % 7, DateTimeUnit.DAY)
 
         // Get the time as Instant of the top of the timetable
-        val timeTop = selectedDayDate.atStartOfDayIn(TimeZone.of("Europe/Amsterdam")).plus(timesShown.first(), DateTimeUnit.HOUR)
+        val timeTop = selectedDayDate.atStartOfDayIn(TimeZone.currentSystemDefault()).plus(timesShown.first(), DateTimeUnit.HOUR)
 
         val timetable = component.timetable.subscribeAsState()
+        val scope = rememberCoroutineScope()
 
         component.getTimetableForWeek(timetable.value, startOfWeekDate).getAgendaForDay(page % 7)
             .forEach { availabilityItem ->
@@ -53,7 +55,7 @@ internal fun TimetableItems(
                 var distanceAfterTop = dpPerHour * (Instant.fromEpochSeconds(availabilityItem.startTime) - timeTop).toDouble(DurationUnit.HOURS).toFloat()
                 if (distanceAfterTop < 0.dp) distanceAfterTop = 0.dp
 
-                TimetableItem(item = availabilityItem, modifier = Modifier.padding(start = 40.5.dp, top = distanceAfterTop).height(height)) {
+                TimetableItem(item = availabilityItem, modifier = Modifier.padding(start = 40.5.dp, top = distanceAfterTop).height(height), onError = { scope.launch { component.parent.snackbarHost.showSnackbar(it) }}) {
                     component.openTimeTableItem(availabilityItem)
                 }
             }
@@ -62,49 +64,84 @@ internal fun TimetableItems(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onClick: () -> Unit) {
+fun TimetableItem(item: AvailabilityItem, modifier: Modifier, onError: (String) -> Unit, onClick: () -> Unit) {
+    val scope = rememberCoroutineScope()
+
     val supportingText = mutableListOf<String>("prachtige description")
 
-    // TODO implement approved time hours
-
-    var checked by remember { mutableStateOf(item.status != HourStatus.Open) }
+    var checkedPresent by remember { mutableStateOf( item.presentType == PresenceType.PRESENT) }
+    var checkedAbsence by remember { mutableStateOf( item.presentType == PresenceType.ABSENCE ) }
 
     ListItem(
         modifier = modifier
             .clickable(onClick = onClick)
             .topBottomRectBorder(brush = SolidColor(MaterialTheme.colorScheme.outline)),
-        headlineContent = { Text("AVT IS GEWELDIG ") }, // TODO
+        headlineContent = { Text(item.title) },
         supportingContent = {
-            /* TODO: Description here or something */
+            Text(item.description)
         },
         trailingContent = {
-            /* TODO: Abel place checkmarks here */
-            Checkbox(
-                checked = checked,
-                onCheckedChange = {
+            Row {
+                Checkbox(
+                    checked = checkedPresent,
+                    enabled = !item.approved,
+                    onCheckedChange = {
 
-                    // TODO change this, this is temporary
-                    // it means if an admin approved your request you cant unrequest it
-                    if (item.status == HourStatus.Approved) {
-                        return@Checkbox
-                    }
+                        checkedPresent = it
 
-                    checked = it
+                        scope.launch {
+                            val res = announcePresence(item.id, !it)
 
-                    val requestType: HourRequestType = if (it) {
-                        HourRequestType.ABSENT
-                    } else {
-                        HourRequestType.NOTHING
-                    }
+                            if (res == HttpStatusCode.Conflict) {
+                                onError("The absence request has been approved \n" +
+                                        "to remove contact administrator")
+                                checkedPresent = !it
+                                return@launch
+                            }
 
-                    runBlocking {
-                        val res = requestHours(item.id, requestType)
-                        if (!res) {
-                            checked = !it
+                            if (res != HttpStatusCode.OK) {
+                                onError("There was an error communicating with the server")
+                                checkedPresent = !it
+                                return@launch
+                            }
+                        }
+
+                        if ((checkedPresent == it).and(it)) {
+                            checkedAbsence = false
                         }
                     }
-                }
-            )
+                )
+                /* TODO: Abel place checkmarks here */
+                Checkbox(
+                    checked = checkedAbsence,
+                    enabled = !item.approved,
+                    onCheckedChange = {
+
+                        checkedAbsence = it
+
+                        scope.launch {
+                            val res = requestHours(item.id, !it)
+
+                            if (res == HttpStatusCode.Conflict) {
+                                onError("The absence request has been approved \n" +
+                                        "to remove contact administrator")
+                                checkedAbsence = !it
+                                return@launch
+                            }
+
+                            if (res != HttpStatusCode.OK) {
+                                onError("There was an error communicating with the server.")
+                                checkedAbsence = !it
+                                return@launch
+                            }
+                        }
+
+                        if ((checkedAbsence == it).and(it)) {
+                            checkedPresent = false
+                        }
+                    }
+                )
+            }
         },
     )
 }

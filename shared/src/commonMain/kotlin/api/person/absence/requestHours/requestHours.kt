@@ -1,16 +1,17 @@
 package api.person.absence.requestHours
 
-import api.client
 import api.requestHoursUrl
-import io.ktor.client.request.*
+import api.requests.deleteRequest
+import api.requests.postRequest
 import io.ktor.http.*
 
-suspend fun requestHours(hourId: Int, requestType: HourRequestType): Boolean {
-    val request = client.post(requestHoursUrl.build()) {
-        contentType(ContentType.Application.Json)
-        bearerAuth(Data.bearerToken ?: return false)
-        setBody(RequestHoursRequest(hourId, requestType))
+suspend fun requestHours(hourId: Int, remove: Boolean): HttpStatusCode? {
+    val request = if (remove) {
+        deleteRequest(requestHoursUrl.build(), RequestHoursRequest(hourId)) ?: return null
+    } else {
+
+        postRequest(requestHoursUrl.build(), RequestHoursRequest(hourId)) ?: return null
     }
 
-    return request.status == HttpStatusCode.OK
+    return request.status
 }

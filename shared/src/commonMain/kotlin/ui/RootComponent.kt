@@ -2,6 +2,7 @@
 package ui
 
 import Data
+import androidx.compose.material3.SnackbarHostState
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.Value
@@ -15,6 +16,8 @@ import kotlinx.serialization.Serializable
 import ui.admin.AdminComponent
 import ui.admin.DefaultAdminComponent
 import ui.login.DefaultLoginComponent
+import ui.login.DefaultMagisterLoginComponent
+import ui.login.MagisterLoginComponent
 import ui.main.DefaultMainComponent
 import ui.main.MainComponent
 import ui.main.children.presence.DefaultPresenceComponent
@@ -34,6 +37,8 @@ interface RootComponent {
 
     fun clearStack(newConfig: Config)
 
+    val snackbarHost: SnackbarHostState
+
     sealed class Child {
         class LoginChild(val component: LoginComponent) : Child()
 
@@ -44,6 +49,8 @@ interface RootComponent {
         class Register(val component: RegisterComponent) : Child()
 
         class Admin(val component: AdminComponent) : Child()
+
+        class MagisterLogin(val component: MagisterLoginComponent) : Child()
 
         data object Onboarding : Child()
     }
@@ -61,6 +68,9 @@ interface RootComponent {
 
         @Serializable
         data object Register : Config
+
+        @Serializable
+        data object MagisterLogin : Config
 
         @Serializable
         data object Admin : Config
@@ -108,6 +118,7 @@ class DefaultRootComponent(
             is RootComponent.Config.Register -> RootComponent.Child.Register(registerComponent(componentContext))
             is RootComponent.Config.Admin -> RootComponent.Child.Admin(adminComponent(componentContext))
             is RootComponent.Config.Onboarding -> RootComponent.Child.Onboarding
+            is RootComponent.Config.MagisterLogin -> RootComponent.Child.MagisterLogin(magisterLoginComponent(componentContext))
         }
 
     private fun loginComponent(componentContext: ComponentContext): LoginComponent =
@@ -121,6 +132,9 @@ class DefaultRootComponent(
 
     private fun registerComponent(componentContext: ComponentContext): RegisterComponent =
         DefaultRegisterComponent(componentContext, this)
+
+    private fun magisterLoginComponent(componentContext: ComponentContext): MagisterLoginComponent =
+        DefaultMagisterLoginComponent(componentContext, this)
 
     private fun adminComponent(componentContext: ComponentContext): AdminComponent =
         DefaultAdminComponent(componentContext, this)
@@ -136,6 +150,8 @@ class DefaultRootComponent(
     override fun clearStack(newConfig: RootComponent.Config) {
         navigation.replaceAll(newConfig)
     }
+
+    override val snackbarHost = SnackbarHostState()
 }
 
 fun CoroutineScope(context: CoroutineContext, lifecycle: Lifecycle): CoroutineScope {

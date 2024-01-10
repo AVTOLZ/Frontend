@@ -1,17 +1,18 @@
 package ui.register
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.TextUnit
-import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import api.accounts.register
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import ui.GeneralUI.InputTextField
 import ui.RootComponent
 
@@ -23,6 +24,8 @@ fun RegisterScreen(component: RegisterComponent) {
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var errorString by remember { mutableStateOf("") }
+
+    val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
         var magisterScreenVisible by remember { mutableStateOf(false) }
@@ -63,7 +66,8 @@ fun RegisterScreen(component: RegisterComponent) {
             InputTextField(
                 value = password,
                 onValueChange = { password = it },
-                label = "Password"
+                label = "Password",
+                passwordField = true
             )
 
             InputTextField(
@@ -81,17 +85,23 @@ fun RegisterScreen(component: RegisterComponent) {
             Button(
                 onClick = {
 
-                    val success = runBlocking {
-                        register(username, password, email, firstName, lastName)
+                    GlobalScope.launch {
+                        val success = register(username, password, email, firstName, lastName)
+
+                        if (success == null) {
+                            errorString = "This username or email is already in use."
+                        }
+
+                        if (success == true) {
+                            component.parent.clearStack(RootComponent.Config.Verify)
+                        }
+
+                        if (success == false) {
+                            scope.launch { component.parent.snackbarHost.showSnackbar("There was a connection error with the server, please try again later") }
+                        }
                     }
 
-                    if (success == null) {
-                        errorString = "This username or email is already in use."
-                    }
 
-                    if (success == true) {
-                        component.parent.clearStack(RootComponent.Config.Verify)
-                    }
                 },
                 modifier = Modifier
                     .fillMaxWidth()

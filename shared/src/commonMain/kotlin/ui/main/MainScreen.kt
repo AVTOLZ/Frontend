@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,6 +17,7 @@ import ui.main.children.presence.DefaultPresenceComponent
 import ui.main.children.presence.PresenceScreen
 import ui.main.children.settings.DefaultSettingsComponent
 import ui.main.children.settings.SettingsScreen
+import ui.main.icons.CalendarTodayIcon
 
 @Composable
 fun MainScreen(component: MainComponent) {
@@ -28,11 +30,18 @@ fun MainScreen(component: MainComponent) {
     )
 
     Scaffold(
+        snackbarHost = { SnackbarHost(component.snackbarHost) },
         bottomBar = {
             NavigationBar(contentColor = MaterialTheme.colorScheme.onPrimary, containerColor = MaterialTheme.colorScheme.primary) {
                 items.forEach { screen ->
+                    val icon = when (screen) {
+                        is MainComponent.Config.Presence -> CalendarTodayIcon
+                        is MainComponent.Config.Settings -> Icons.Default.Settings
+                        else -> throw RuntimeException("Icon not defined") // yes, this else branch is needed
+                    }
+
                     NavigationBarItem(
-                        icon = screen.icon,
+                        icon = { Icon(icon, screen.text) },
                         label = { Text(screen.text) },
                         selected = overlay.configuration == screen,
                         onClick = {

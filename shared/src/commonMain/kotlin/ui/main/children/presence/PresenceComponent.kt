@@ -5,16 +5,11 @@ import androidx.compose.foundation.pager.PagerState
 import api.person.absence.availability.AvailabilityItem
 import api.person.absence.availability.readAvailability
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.router.stack.*
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.essenty.backhandler.BackCallback
-import dev.tiebe.magisterapi.api.absence.AbsenceFlow.getAbsences
 import dev.tiebe.magisterapi.utils.MagisterException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import kotlinx.datetime.*
 import ui.componentCoroutineScope
 import ui.main.MainComponent
@@ -87,7 +82,7 @@ interface PresenceComponent: MenuItemComponent {
 class DefaultPresenceComponent(
     componentContext: ComponentContext, override val parent: MainComponent,
 ) : PresenceComponent, ComponentContext by componentContext {
-    override val now: MutableValue<LocalDateTime> = MutableValue(Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam")))
+    override val now: MutableValue<LocalDateTime> = MutableValue(Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()))
     override val currentPage = MutableValue(500 + now.value.date.dayOfWeek.ordinal)
 
     override val timetable: MutableValue<List<AvailabilityItem>> = MutableValue(emptyList())
@@ -112,7 +107,14 @@ class DefaultPresenceComponent(
             try {
                 println("Refreshing agenda for week $selectedWeek")
 
-                timetable.value = readAvailability() ?: emptyList()
+                var tableList = readAvailability()
+
+                if (tableList == null) {
+                    parent.parent.snackbarHost.showSnackbar("There was an error retrieving data from the server","") // this line is fucked
+                    tableList = emptyList()
+                }
+
+                timetable.value = tableList
             } catch (e: MagisterException) {
                 e.printStackTrace()
             } catch (e: Exception) {
@@ -149,7 +151,7 @@ class DefaultPresenceComponent(
 
         scope.launch {
             while (true) {
-                now.value = Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+                now.value = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
 
                 delay(60_000)
             }
@@ -164,5 +166,5 @@ fun List<AvailabilityItem>.getAgendaForDay(day: Int): List<AvailabilityItem> {
     }
 }
 
-val AvailabilityItem.startDateTime get() = Instant.fromEpochSeconds(startTime).toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
-val AvailabilityItem.endDateTime get() = Instant.fromEpochSeconds(endTime).toLocalDateTime(TimeZone.of("Europe/Amsterdam"))
+val AvailabilityItem.startDateTime get() = Instant.fromEpochSeconds(startTime).toLocalDateTime(TimeZone.currentSystemDefault())
+val AvailabilityItem.endDateTime get() = Instant.fromEpochSeconds(endTime).toLocalDateTime(TimeZone.currentSystemDefault())

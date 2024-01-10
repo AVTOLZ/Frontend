@@ -1,6 +1,8 @@
 package api
 
+import Data
 import io.ktor.client.*
+import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.kotlinx.json.*
@@ -9,9 +11,12 @@ val client = HttpClient {
     install(ContentNegotiation) {
         json()
     }
+    install(HttpTimeout) {
+        requestTimeoutMillis = 5000
+    }
 }
 
-val baseUrl = URLBuilder("http://localhost:8080").appendPathSegments("api")
+val baseUrl = URLBuilder("https://avt.tiebe.dev").appendPathSegments("api")
 
 val accountsUrl = baseUrl.clone().appendPathSegments("accounts")
 val loginUrl = accountsUrl.clone().appendPathSegments("login")
@@ -25,3 +30,6 @@ val registerUrl = accountsUrl.clone().appendPathSegments("register")
 val verifyUrl = accountsUrl.clone().appendPathSegments("verify")
 
 val infoUrl get() = personUrl.clone().appendPathSegments("info")
+
+val presentUrl get() = personUrl.clone().appendPathSegments("announce_presence")
+val magisterLinkUrl get() = personUrl.clone().appendPathSegments("magister")

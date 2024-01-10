@@ -37,7 +37,7 @@ internal fun Timetable(
     ) { page ->
         val scope = rememberCoroutineScope()
 
-        val now = remember { Clock.System.now().toLocalDateTime(TimeZone.of("Europe/Amsterdam")) }
+        val now = remember { Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()) }
 
         val startOfWeekDate = getStartOfWeekFromDay(page, dayPagerState.initialPage, now)
         val endOfWeekDate = startOfWeekDate.plus(6, DateTimeUnit.DAY)
