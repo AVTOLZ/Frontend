@@ -19,7 +19,7 @@ jobs:
     - uses: actions/cache@v3.3.2
 
     - name: Retrieve keystore
-      run: echo "${{ secrets.KEYSTORE_FILE }}" > keystore.jks.asc && gpg -d --passphrase "${{ secrets.KEYSTORE_PASSWORD }}" --armor keystore.jks.asc > androidApp/keystore.jks
+      run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > androidApp/keystore.jks
 
     - name: Build and release
       uses: maierj/fastlane-action@v3.0.0
