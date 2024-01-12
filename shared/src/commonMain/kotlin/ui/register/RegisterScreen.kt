@@ -23,6 +23,7 @@ fun RegisterScreen(component: RegisterComponent) {
     var email by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
+    var studentId by remember { mutableStateOf("") }
     var errorString by remember { mutableStateOf("") }
 
     val scope = rememberCoroutineScope()
@@ -82,11 +83,23 @@ fun RegisterScreen(component: RegisterComponent) {
                 label = "Last name"
             )
 
+            val regex = """^[0-9]*$""".toRegex()
+
+            InputTextField(
+                value = studentId,
+                onValueChange = {
+                    if (regex.matches(it)) {
+                        studentId = it
+                    }
+                },
+                label = "studentId"
+            )
+
             Button(
                 onClick = {
 
                     GlobalScope.launch {
-                        val success = register(username, password, email, firstName, lastName)
+                        val success = register(username, password, email, firstName, lastName, studentId.toInt())
 
                         if (success == null) {
                             errorString = "This username or email is already in use."
