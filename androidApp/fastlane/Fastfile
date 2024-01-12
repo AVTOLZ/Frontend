@@ -1,0 +1,59 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(
+      task: "test",
+      gradle_path: "../gradlew"
+    )
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+      gradle(
+        task: 'bundleRelease',
+        build_type: 'Release',
+        gradle_path: '../gradlew',
+        print_command: false,
+        properties: {
+          "android.injected.signing.store.file" => "keystore.jks",
+          "android.injected.signing.store.password" => "3@hJ^BKepgG3ou",
+          "android.injected.signing.key.alias" => "avt-frontend",
+          "android.injected.signing.key.password" => "XT#pe9QF7#54%x",
+        }
+      )
+    upload_to_play_store
+  end
+
+    desc "Build APK"
+    lane :apk do
+        gradle(
+          task: 'assemble',
+          build_type: 'Release',
+          gradle_path: '../gradlew',
+          print_command: false,
+          properties: {
+            "android.injected.signing.store.file" => "keystore.jks",
+            "android.injected.signing.store.password" => "3@hJ^BKepgG3ou",
+            "android.injected.signing.key.alias" => "avt-frontend",
+            "android.injected.signing.key.password" => "XT#pe9QF7#54%x",
+          }
+        )
+    end
+end
