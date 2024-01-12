@@ -26,6 +26,7 @@ platform :android do
 
   desc "Deploy a new version to the Google Play"
   lane :deploy do
+      setup_ci if ENV['CI']
       gradle(
         task: 'bundle',
         build_type: 'Release',
