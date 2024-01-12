@@ -28,7 +28,7 @@ jobs:
         bundler-cache: true
 
     - name: Retrieve keystore
-      run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > keystore.jks
+      run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > keystore.jks && ls
 
     - name: Build and release
       uses: maierj/fastlane-action@v3.0.0
