@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./androidApp
     steps:
     - uses: actions/checkout@v3
     - uses: actions/cache@v3.3.2
@@ -26,9 +23,10 @@ jobs:
       with:
         ruby-version: '3.0'
         bundler-cache: true
+        working-directory: androidApp/
 
     - name: Retrieve keystore
-      run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > keystore.jks && ls
+      run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > androidApp/keystore.jks && ls
 
     - name: Build and release
       uses: maierj/fastlane-action@v3.0.0
