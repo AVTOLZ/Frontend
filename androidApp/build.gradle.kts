@@ -37,8 +37,8 @@ android {
         applicationId = "dev.avt.app"
         minSdk = (findProperty("android.minSdk") as String).toInt()
         targetSdk = (findProperty("android.targetSdk") as String).toInt()
-        versionCode = 4
-        versionName = "1.3"
+        versionCode = 5
+        versionName = "1.3.1"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
