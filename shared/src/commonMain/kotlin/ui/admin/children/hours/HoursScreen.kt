@@ -15,18 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import api.admin.RequestedHour
+import api.admin.absence.RequestedHourData
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import icons.AppIcons
 import icons.appicons.Printer
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 @Composable
 fun HoursScreen(component: HoursComponent) {
     Box(Modifier.fillMaxSize()) {
         val hours = component.hours.subscribeAsState().value
 
-        var checked by remember { mutableStateOf(listOf<RequestedHour>()) }
+        var checked by remember { mutableStateOf(listOf<RequestedHourData>()) }
 
         // The LazyColumn will be our table. Notice the use of the weights below
         LazyColumn(Modifier.fillMaxSize().padding(16.dp)) {
@@ -53,8 +56,10 @@ fun HoursScreen(component: HoursComponent) {
 
                     Spacer(Modifier.size(3.dp))
 
-                    TableCell(weight = .3f) { Text(event.userId.toString()) }
-                    TableCell(weight = .5f) { Text(event.hourId.toString()) }
+                    val time = Instant.fromEpochSeconds(event.hour.startTime).toLocalDateTime(TimeZone.currentSystemDefault())
+
+                    TableCell(weight = .3f) { Text(event.user.firstName.toString()) }
+                    TableCell(weight = .5f) { Text("Start Time: " + time.date.toString() + " " + time.time.toString()) }
                 }
             }
         }
