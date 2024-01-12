@@ -26,7 +26,10 @@ jobs:
         working-directory: androidApp/
 
     - name: Retrieve keystore
-      run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > androidApp/keystore.jks && ls
+      run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > androidApp/keystore.jks
+
+    - name: Retrieve keystore
+      run: echo "${{ secrets.GOOGLE_KEY }}" | base64 -d > androidApp/key.json
 
     - name: Build and release
       uses: maierj/fastlane-action@v3.0.0
