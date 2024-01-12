@@ -36,3 +36,4 @@ jobs:
         # The lane that should be executed.
         lane: release
         # The relative path from the project root directory to the subdirectory where the fastlane folder is located.
+        subdirectory: androidApp/
