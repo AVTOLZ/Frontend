@@ -18,6 +18,11 @@ jobs:
         distribution: 'temurin'
     - uses: actions/cache@v3.3.2
 
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.0'
+        bundler-cache: true
+
     - name: Retrieve keystore
       run: echo "${{ secrets.KEYSTORE_FILE }}" | base64 -d > androidApp/keystore.jks
 
