@@ -27,7 +27,7 @@ platform :android do
   desc "Deploy a new version to the Google Play"
   lane :deploy do
       gradle(
-        task: 'bundleRelease',
+        task: 'bundle',
         build_type: 'Release',
         gradle_path: '../gradlew',
         print_command: false,
