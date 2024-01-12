@@ -19,10 +19,10 @@ jobs:
     - uses: actions/cache@v3.3.2
 
     - name: Retrieve keystore
-    - run: echo "${{ secrets.KEYSTORE_PASSWORD }}" > keystore.jks.asc && gpg -d --passphrase "${{ secrets.KEYSTORE_PASSWORD }}" --batch keystore.jks.asc > androidApp/keystore.jks
+      run: echo "${{ secrets.KEYSTORE_PASSWORD }}" > keystore.jks.asc && gpg -d --passphrase "${{ secrets.KEYSTORE_PASSWORD }}" --batch keystore.jks.asc > androidApp/keystore.jks
 
     - name: Build and release
-    - uses: maierj/fastlane-action@v3.0.0
+      uses: maierj/fastlane-action@v3.0.0
       with:
         # The lane that should be executed.
         lane: release
