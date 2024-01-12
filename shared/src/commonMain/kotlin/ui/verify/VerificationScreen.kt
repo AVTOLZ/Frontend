@@ -26,7 +26,7 @@ fun VerificationScreen(component: VerificationComponent) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "We've just sent you a mail with a verification code. Please enter it here:",
+            text = "An administrator needs to verify your account. [text here]",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onBackground,
             fontWeight = FontWeight.Light,
@@ -34,21 +34,6 @@ fun VerificationScreen(component: VerificationComponent) {
             modifier = Modifier.padding(10.dp),
             letterSpacing = 1.sp,
         )
-
-
-        var verificationCode by remember { mutableStateOf("") }
-
-        TextField(
-            verificationCode,
-            { verificationCode = it },
-            placeholder = { Text("Verification code") },
-        )
-
-        Button(onClick = {
-            component.verify(verificationCode)
-        }) {
-            Text("Verify")
-        }
     }
 
 

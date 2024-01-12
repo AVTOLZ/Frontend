@@ -9,13 +9,14 @@ import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 
-suspend fun register(username: String, password: String, email: String, firstName: String, lastName: String): Boolean? {
+suspend fun register(username: String, password: String, email: String, firstName: String, lastName: String, studentId: Int): Boolean? {
     val request = postRequest(registerUrl.build(), RegisterRequest(
         username,
         password,
         email,
         firstName,
-        lastName
+        lastName,
+        studentId
     )) ?: return false
 
     if (request.status == HttpStatusCode.OK) {
@@ -32,23 +33,4 @@ suspend fun register(username: String, password: String, email: String, firstNam
     } else {
         return false
     }
-}
-
-suspend fun verifyAccount(personId: Int, code: Int): Boolean? {
-    val request = try {
-        client.post(verifyUrl.build()) {
-            parameter("id", personId)
-            parameter("code", code)
-        }
-    }
-    catch (error: Throwable) {
-        return null
-    }
-
-    if (request.status == HttpStatusCode.OK) {
-        Data.verified = true
-        return true
-    }
-
-    return false
 }
