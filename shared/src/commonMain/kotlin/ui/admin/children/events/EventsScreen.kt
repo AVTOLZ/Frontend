@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import api.admin.Event
+import api.admin.Event.Event
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
 import icons.AppIcons
 import icons.appicons.Printer

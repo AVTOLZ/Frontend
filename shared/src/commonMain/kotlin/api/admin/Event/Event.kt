@@ -1,11 +1,11 @@
-package api.admin
+package api.admin.Event
 
 import api.person.info.AVTRanks
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class Event(
-    val id: Int,
+    val id: Int? = null,
     val requiredRank: AVTRanks,
     var startTime: Long,
     var endTime: Long,

@@ -1,7 +1,7 @@
 package ui.admin.children.events
 
-import api.admin.Event
-import api.admin.getEvents
+import api.admin.Event.Event
+import api.admin.Event.getEvents
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
