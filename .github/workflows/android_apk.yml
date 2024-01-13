@@ -1,5 +1,5 @@
 
-name: Android release
+name: Android build APK
 
 on:
   push:
