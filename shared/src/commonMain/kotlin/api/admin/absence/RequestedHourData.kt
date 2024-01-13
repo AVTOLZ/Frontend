@@ -1,6 +1,6 @@
 package api.admin.absence
 
-import api.admin.Event.Event
+import api.admin.event.Event
 import api.admin.person.PersonData
 import api.person.absence.availability.PresenceType
 import kotlinx.serialization.Serializable

@@ -38,5 +38,6 @@ val magisterLinkUrl get() = personUrl.clone().appendPathSegments("magister")
 
 val adminUrl = baseUrl.clone().appendPathSegments("admin")
 val eventsUrl = adminUrl.clone().appendPathSegments("events")
+val peopleUrl = adminUrl.clone().appendPathSegments("person")
 val hoursUrl = adminUrl.clone().appendPathSegments("absence")
 val printUrl = adminUrl.clone().appendPathSegments("print")

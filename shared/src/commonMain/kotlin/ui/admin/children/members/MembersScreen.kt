@@ -1,62 +1,79 @@
 package ui.admin.children.members
 
-import Data
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import ui.RootComponent
-import ui.main.children.settings.SettingsComponent
+import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import ui.admin.children.Table
 
 @Composable
 fun MembersScreen(component: MembersComponent) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Card(
-            modifier = Modifier.padding(8.dp),
-            elevation = 8.dp,
-            shape = RoundedCornerShape(8.dp)
-        ){
-            Column(modifier = Modifier.padding(16.dp)) {
-                CustomText(title = "Username", value = Data.username ?: "")
-                CustomText(title = "Voornaam", value = Data.userFirstname ?: "")
-                CustomText(title = "Achternaam", value = Data.userLastname ?: "")
-                CustomText(title = "Rang", value = Data.userRankString ?: "")
-            }
+    val members = component.members.subscribeAsState().value
+
+    Table(
+        modifier = Modifier.fillMaxSize(),
+        columnCount = 9,
+        rowCount = members.size + 1,
+    ) { row, col ->
+        if (row == 0) {
+            Header(col)
+            return@Table
         }
 
-        Button(onClick = {
-            Data.clearData()
-            component.parent.parent.navigateTo(RootComponent.Config.Onboarding)
-        },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)) {
-            Text(
-                text = "Logout",
-                style = TextStyle(color = Color.White, fontSize = 16.sp)
-            )
+        val member = members[row - 1]
+
+        when (col) {
+            0 /* ID */-> TableStringTextItem(member.id.toString())
+            1 /* Username */-> TableStringTextItem(member.username.toString())
+            2 /* Password */-> TableStringTextItem("******")
+            3 /* Email */-> TableStringTextItem(member.email.toString())
+            4 /* First name */-> TableStringTextItem(member.firstName.toString())
+            5 /* Last name */-> TableStringTextItem(member.lastName.toString())
+            6 /* Student ID */-> TableStringTextItem(member.studentId.toString())
+            7 /* Rank */-> TableStringTextItem(member.rank.toString())
+            8 /* State */-> TableStringTextItem(member.state.toString())
         }
+    }
+
+}
+
+@Composable
+fun Header(col: Int) {
+    when (col) {
+        0 /* ID */-> HeaderItem("ID")
+        1 /* Username */-> HeaderItem("Username")
+        2 /* Password */-> HeaderItem("Password")
+        3 /* Email */-> HeaderItem("Email")
+        4 /* First name */-> HeaderItem("First name")
+        5 /* Last name */-> HeaderItem("Last name")
+        6 /* Student ID */-> HeaderItem("Student ID")
+        7 /* Rank */-> HeaderItem("Rank")
+        8 /* State */-> HeaderItem("State")
     }
 }
 
 @Composable
-fun CustomText(title: String, value: String) {
-    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Text(text = title, color = Color.Gray, fontSize = 14.sp)
-        Text(text = value, color = Color.Black, fontSize = 16.sp)
+fun TableItem(contents: @Composable BoxScope.() -> Unit) {
+    Box(Modifier.padding(end = 10.dp, bottom = 5.dp)) {
+        contents()
+    }
+}
+
+@Composable
+fun HeaderItem(text: String) {
+    TableItem {
+        Text(text)
+    }
+}
+
+@Composable
+fun TableStringTextItem(text: String) {
+    TableItem {
+        Text(text)
     }
 }

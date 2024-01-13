@@ -1,4 +1,4 @@
-package api.admin.Event
+package api.admin.event
 
 import api.eventsUrl
 import api.requests.deleteRequest

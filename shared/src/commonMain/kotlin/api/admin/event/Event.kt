@@ -1,4 +1,4 @@
-package api.admin.Event
+package api.admin.event
 
 import api.person.info.AVTRanks
 import kotlinx.serialization.Serializable

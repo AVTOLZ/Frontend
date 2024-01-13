@@ -11,7 +11,7 @@ data class PersonData (
     val email: String?,
     val firstName: String?,
     val lastName: String?,
-    val studentId: Int?,
+    val studentId: Int,
     val rank: AVTRanks,
     val state: UserState
 )
