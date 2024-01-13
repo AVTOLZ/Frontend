@@ -4,7 +4,6 @@ import androidx.compose.runtime.*
 import api.accounts.magisterLogin
 import dev.tiebe.magisterapi.api.account.LoginFlow
 import kotlinx.coroutines.launch
-import ui.RootComponent
 
 @Composable
 fun MagisterLoginScreen(component: MagisterLoginComponent) {
@@ -16,7 +15,15 @@ fun MagisterLoginScreen(component: MagisterLoginComponent) {
         loginUrl = LoginFlow.createAuthURL()
         loginUrl.url
     }) { url ->
-        val code = getCode(url) ?: return@MagisterLoginWebView false
+        val code = getCode(url)
+        if (code == null) {
+            scope.launch {
+                component.parent.snackbarHost.showSnackbar("Error while signing into Magister, please try again.")
+                component.parent.clearStack(component.parent.getInitialConfiguration())
+            }
+
+            return@MagisterLoginWebView false
+        }
 
         scope.launch {
             val tokens = LoginFlow.exchangeTokens(code, loginUrl.codeVerifier)
@@ -25,7 +32,7 @@ fun MagisterLoginScreen(component: MagisterLoginComponent) {
 
             when (success) {
                 true -> {
-                    component.parent.navigateTo(RootComponent.Config.Main)
+                    component.parent.clearStack(component.parent.getInitialConfiguration())
                 }
                 false -> {
                     component.parent.snackbarHost.showSnackbar("Error while signing into Magister, please try again.")
@@ -37,6 +44,6 @@ fun MagisterLoginScreen(component: MagisterLoginComponent) {
 
         }
 
-        return@MagisterLoginWebView false
+        return@MagisterLoginWebView true
     }
 }

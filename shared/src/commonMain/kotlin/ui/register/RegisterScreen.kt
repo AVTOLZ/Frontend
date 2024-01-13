@@ -14,7 +14,6 @@ import api.accounts.register
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import ui.GeneralUI.InputTextField
-import ui.RootComponent
 
 @Composable
 fun RegisterScreen(component: RegisterComponent) {
@@ -29,8 +28,6 @@ fun RegisterScreen(component: RegisterComponent) {
     val scope = rememberCoroutineScope()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        var magisterScreenVisible by remember { mutableStateOf(false) }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -92,12 +89,11 @@ fun RegisterScreen(component: RegisterComponent) {
                         studentId = it
                     }
                 },
-                label = "studentId"
+                label = "Student ID"
             )
 
             Button(
                 onClick = {
-
                     GlobalScope.launch {
                         val success = register(username, password, email, firstName, lastName, studentId.toInt())
 
@@ -106,7 +102,7 @@ fun RegisterScreen(component: RegisterComponent) {
                         }
 
                         if (success == true) {
-                            component.parent.clearStack(RootComponent.Config.Verify)
+                            component.parent.clearStack(component.parent.getInitialConfiguration())
                         }
 
                         if (success == false) {
