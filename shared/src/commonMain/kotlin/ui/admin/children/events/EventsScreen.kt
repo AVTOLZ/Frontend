@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Checkbox
-import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,8 +15,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import api.admin.event.Event
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
-import icons.AppIcons
-import icons.appicons.Printer
 
 @Composable
 fun EventsScreen(component: EventsComponent) {
@@ -57,16 +53,6 @@ fun EventsScreen(component: EventsComponent) {
                 }
             }
         }
-
-        ExtendedFloatingActionButton(
-            modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp),
-            onClick = {},
-            icon = {
-                Icon(AppIcons.Printer, "Print")
-            }, text = {
-                Text("Print")
-            }
-        )
     }
 }
 

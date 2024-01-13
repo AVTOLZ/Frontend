@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.layout
 @Composable
 fun Table(
     modifier: Modifier = Modifier,
-    rowModifier: Modifier = Modifier,
+    rowModifier: (rowIndex: Int) -> Modifier = { Modifier },
     verticalLazyListState: LazyListState = rememberLazyListState(),
     horizontalScrollState: ScrollState = rememberScrollState(),
     columnCount: Int,
@@ -35,7 +35,7 @@ fun Table(
                 Column {
                     beforeRow?.invoke(rowIndex)
 
-                    Row(modifier = rowModifier) {
+                    Row(modifier = rowModifier(rowIndex)) {
                         (0 until columnCount).forEach { columnIndex ->
                             Box(modifier = Modifier.layout { measurable, constraints ->
                                 val placeable = measurable.measure(constraints)
