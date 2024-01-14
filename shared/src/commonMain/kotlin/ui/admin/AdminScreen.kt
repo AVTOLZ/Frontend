@@ -40,6 +40,7 @@ fun AdminScreen(component: AdminComponent) {
                         is AdminComponent.Config.Members -> { Icons.Default.Person }
                         is AdminComponent.Config.Events -> { Icons.Default.Add }
                         is AdminComponent.Config.Hours -> { Icons.Default.Check }
+                        else -> {}
                     }
 
                     NavigationBarItem(
