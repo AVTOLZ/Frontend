@@ -16,7 +16,9 @@ val client = HttpClient {
     }
 }
 
-val baseUrl = URLBuilder("https://avt.tiebe.dev").appendPathSegments("api")
+val PROD_URL = URLBuilder("https://avt.tiebe.dev").appendPathSegments("api")
+val DEBUG_URL = URLBuilder("http://localhost:8080").appendPathSegments("api")
+val baseUrl = PROD_URL
 
 val accountsUrl = baseUrl.clone().appendPathSegments("accounts")
 val loginUrl = accountsUrl.clone().appendPathSegments("login")
@@ -33,3 +35,9 @@ val infoUrl get() = personUrl.clone().appendPathSegments("info")
 
 val presentUrl get() = personUrl.clone().appendPathSegments("announce_presence")
 val magisterLinkUrl get() = personUrl.clone().appendPathSegments("magister")
+
+val adminUrl = baseUrl.clone().appendPathSegments("admin")
+val eventsUrl = adminUrl.clone().appendPathSegments("events")
+val peopleUrl = adminUrl.clone().appendPathSegments("person")
+val hoursUrl = adminUrl.clone().appendPathSegments("absence")
+val printUrl = adminUrl.clone().appendPathSegments("print")

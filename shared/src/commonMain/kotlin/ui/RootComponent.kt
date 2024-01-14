@@ -13,6 +13,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancel
 import ui.login.LoginComponent
 import kotlinx.serialization.Serializable
+import ui.admin.AdminComponent
+import ui.admin.DefaultAdminComponent
 import ui.login.DefaultLoginComponent
 import ui.login.DefaultMagisterLoginComponent
 import ui.login.MagisterLoginComponent
@@ -46,6 +48,8 @@ interface RootComponent {
 
         class Register(val component: RegisterComponent) : Child()
 
+        class Admin(val component: AdminComponent) : Child()
+
         class MagisterLogin(val component: MagisterLoginComponent) : Child()
 
         data object Onboarding : Child()
@@ -67,6 +71,9 @@ interface RootComponent {
 
         @Serializable
         data object MagisterLogin : Config
+
+        @Serializable
+        data object Admin : Config
 
         @Serializable
         data object Onboarding : Config
@@ -109,6 +116,7 @@ class DefaultRootComponent(
             is RootComponent.Config.Main -> RootComponent.Child.MainScreen(mainComponent(componentContext))
             is RootComponent.Config.Verify -> RootComponent.Child.Verify(verificationComponent(componentContext))
             is RootComponent.Config.Register -> RootComponent.Child.Register(registerComponent(componentContext))
+            is RootComponent.Config.Admin -> RootComponent.Child.Admin(adminComponent(componentContext))
             is RootComponent.Config.Onboarding -> RootComponent.Child.Onboarding
             is RootComponent.Config.MagisterLogin -> RootComponent.Child.MagisterLogin(magisterLoginComponent(componentContext))
         }
@@ -127,6 +135,9 @@ class DefaultRootComponent(
 
     private fun magisterLoginComponent(componentContext: ComponentContext): MagisterLoginComponent =
         DefaultMagisterLoginComponent(componentContext, this)
+
+    private fun adminComponent(componentContext: ComponentContext): AdminComponent =
+        DefaultAdminComponent(componentContext, this)
 
     override fun onBackClicked(toIndex: Int) {
         navigation.popTo(index = toIndex)
