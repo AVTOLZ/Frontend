@@ -10,6 +10,8 @@ import kotlinx.serialization.Serializable
 import ui.RootComponent
 import ui.admin.children.events.DefaultEventsComponent
 import ui.admin.children.events.EventsComponent
+import ui.admin.children.events.addNew.DefaultNewEventComponent
+import ui.admin.children.events.addNew.NewEventComponent
 import ui.admin.children.hours.DefaultHoursComponent
 import ui.admin.children.hours.HoursComponent
 import ui.admin.children.members.DefaultMembersComponent
@@ -34,6 +36,9 @@ interface AdminComponent {
 
         @Serializable
         data object Hours : Config("Hours")
+
+        @Serializable
+        data object NewEvent : Config("NewEvent")
     }
 
 
@@ -55,6 +60,7 @@ class DefaultAdminComponent(
             is AdminComponent.Config.Members -> membersComponent(componentContext)
             is AdminComponent.Config.Events -> eventsComponent(componentContext)
             is AdminComponent.Config.Hours -> hoursComponent(componentContext)
+            is AdminComponent.Config.NewEvent -> newEventComponent(componentContext)
         }
     }
 
@@ -67,6 +73,8 @@ class DefaultAdminComponent(
     private fun hoursComponent(componentContext: ComponentContext): HoursComponent =
         DefaultHoursComponent(componentContext, this)
 
+    private fun newEventComponent(componentContext: ComponentContext): NewEventComponent =
+        DefaultNewEventComponent(componentContext, this)
 
     override fun navigateTo(config: AdminComponent.Config) {
         dialogNavigation.activate(config)

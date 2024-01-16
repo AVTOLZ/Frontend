@@ -5,6 +5,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExtendedFloatingActionButton
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import api.admin.event.Event
 import com.arkivanov.decompose.extensions.compose.jetbrains.subscribeAsState
+import ui.admin.AdminComponent
 
 @Composable
 fun EventsScreen(component: EventsComponent) {
@@ -53,6 +55,13 @@ fun EventsScreen(component: EventsComponent) {
                 }
             }
         }
+
+        ExtendedFloatingActionButton(
+            modifier = Modifier.align(Alignment.BottomEnd).padding(10.dp),
+            onClick = { component.parent.navigateTo(AdminComponent.Config.NewEvent) },
+//            icon = { TODO() },
+            text = { Text("Add new item") }
+        )
     }
 }
 

@@ -16,6 +16,8 @@ import ui.RootComponent
 import ui.admin.AdminComponent
 import ui.admin.children.events.EventsComponent
 import ui.admin.children.events.EventsScreen
+import ui.admin.children.events.addNew.NewEventComponent
+import ui.admin.children.events.addNew.NewEventScreen
 import ui.admin.children.hours.HoursComponent
 import ui.admin.children.hours.HoursScreen
 import ui.admin.children.members.MembersComponent
@@ -69,6 +71,7 @@ fun AdminScreen(component: AdminComponent) {
                 is MembersComponent -> MembersScreen(dialogComponent)
                 is EventsComponent -> EventsScreen(dialogComponent)
                 is HoursComponent -> HoursScreen(dialogComponent)
+                is NewEventComponent -> NewEventScreen(dialogComponent)
                 else -> {}
             }
         }
