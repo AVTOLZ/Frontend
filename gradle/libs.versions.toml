@@ -9,7 +9,7 @@ ios_target = "11.0"
 
 magister = "1.1.15"
 
-kotlin = "1.9.20"
+kotlin = "1.9.23"
 gradle = "7.4.2"
 appcompat = "1.6.1"
 material = "1.11.0"
